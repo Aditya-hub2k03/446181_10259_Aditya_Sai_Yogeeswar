@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List Application</title>
+</head>
+<body>
+  <style>
+    body {
+      background-image: url('https://images.unsplash.com/photo-1644329843491-99edfc83de04?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+      background-size: cover;
+      font-family: sans-serif;
+    }
+  </style>
+
+  <i><h1 style="color:rgb(185, 118, 18);">
+    Date: <input type="date" id="todayDate" readonly style="width: 150px; height: 30px; font-size:22px;">
+    <br><br>
+  </h1></i>
+
+  <i><h1 style="color:rgb(185, 118, 18);">
+    To-Do Item Description:  
+    <textarea id="todoDescription" rows="3" cols="30" style="width: 300px; height: 30px;"></textarea>
+    <br><br>
+  </h1></i>
+
+  <i><h1 style="color:rgb(185, 118, 18);">
+    Target Date & Time: 
+    <input type="datetime-local" id="targetDateTime" style="width: 200px; height: 30px;">
+  </h1></i>
+
+  <i><h1 style="color:rgb(185, 118, 18);">
+    Status of a Task:  
+    <input type="checkbox" id="todoStatus" checked> Done
+    <br><br>
+  </h1></i>
+
+  <div style="margin-bottom: 20px;">
+    <button onclick="addToDo()" style="font-size: 20px; padding: 5px 20px; background-color: green; color: white; border: 5px; border-radius: 3px;">Add To-Do</button>
+  </div>
+
+  <table border="1" id="todoTable" cellspacing="10">
+    <thead>
+      <tr>
+        <th><h2 style="color:rgb(66, 13, 128);"><i>To-Do ID</i></h2></th>
+        <th><h2 style="color:rgb(66, 13, 128);"><i>To-Do Description</i></h2></th>
+        <th><h2 style="color:rgb(66, 13, 128);"><i>Target Date & Time</i></h2></th>
+        <th><h2 style="color:rgb(66, 13, 128);"><i>Current Status</i></h2></th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <script src="script.js"></script>
+</body>
+</html>
