@@ -11,6 +11,10 @@ if (day < 10) {
   day = "0" + day;
 }
 document.getElementById("todayDate").value = year + "-" + month + "-" + day;
+var todayDateInput = document.getElementById("todayDate").value;
+var now = new Date();
+var currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+document.getElementById("targetDateTime").min = todayDateInput + "T" + currentTime;
 
 function getNextToDoID() {
   todoCounter = todoCounter + 1;
@@ -20,14 +24,8 @@ function getNextToDoID() {
 function addToDo() {
   var description = document.getElementById("todoDescription").value;
   var dateTime = document.getElementById("targetDateTime").value;
-  var isChecked = document.getElementById("todoStatus").checked;
 
-  var status;
-  if (isChecked == true) {
-    status = "Done";
-  } else {
-    status = "Not Done";
-  }
+  var status = "Pending"; // Default status
 
   if (description == "" || dateTime == "") {
     alert("Please enter all required fields.");
@@ -47,7 +45,7 @@ function addToDo() {
   var hour = timePieces[0];
   var minute = timePieces[1];
 
-  var finalDateTime = day + ":" + month + ":" + year + " " + minute + ":" + hour;
+  var finalDateTime = day + ":" + month + ":" + year + " " + hour + ":" + minute;
 
   var table = document.getElementById("todoTable");
   var tbody = table.getElementsByTagName("tbody")[0];
@@ -57,24 +55,36 @@ function addToDo() {
   cell1.innerText = getNextToDoID();
 
   var cell2 = newRow.insertCell(1);
-  cell2.innerText = description;
+  var todayValue = document.getElementById("todayDate").value;
+  cell2.innerHTML = description + "<br><small style='color:#4d1775;'>(Added on " + todayValue + ")</small>";
+
 
   var cell3 = newRow.insertCell(2);
   cell3.innerText = finalDateTime;
 
   var cell4 = newRow.insertCell(3);
-  var button = document.createElement("button");
-  button.innerText = status;
-  button.onclick = function () {
-    if (button.innerText == "Done") {
-      button.innerText = "Not Done";
-    } else {
-      button.innerText = "Done";
+  var dropdown = document.createElement("select");
+
+  var options = [
+    "Pending",
+    "To be Started",
+    "Half way Completed",
+    "Almost Completed",
+    "Completed"
+  ];
+
+  for (var i = 0; i < options.length; i++) {
+    var option = document.createElement("option");
+    option.value = options[i];
+    option.text = options[i];
+    if (options[i] === status) {
+      option.selected = true;
     }
-  };
-  cell4.appendChild(button);
+    dropdown.appendChild(option);
+  }
+
+  cell4.appendChild(dropdown);
 
   document.getElementById("todoDescription").value = "";
   document.getElementById("targetDateTime").value = "";
-  document.getElementById("todoStatus").checked = true;
 }
