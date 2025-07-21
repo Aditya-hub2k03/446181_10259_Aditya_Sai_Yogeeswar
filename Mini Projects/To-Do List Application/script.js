@@ -25,7 +25,7 @@ function addToDo() {
   var description = document.getElementById("todoDescription").value;
   var dateTime = document.getElementById("targetDateTime").value;
 
-  var status = "Pending"; // Default status
+  var status = "Pending"; 
 
   if (description == "" || dateTime == "") {
     alert("Please enter all required fields.");
