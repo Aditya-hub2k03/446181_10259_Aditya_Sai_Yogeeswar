@@ -12,31 +12,38 @@
       background-size: cover;
       font-family: sans-serif;
     }
+    label {
+      color: rgb(185, 118, 18);
+      font-size: 32px;
+      font-style: italic;
+    }
+    td {
+      padding: 10px 20px;
+      vertical-align: middle;
+    }
   </style>
 
-  <i><h1 style="color:rgb(185, 118, 18);">
-    Date: <input type="date" id="todayDate" readonly style="width: 150px; height: 30px; font-size:22px;">
-    <br><br>
-  </h1></i>
+  <!-- Table to align labels and inputs -->
+  <table>
+    <tr>
+      <td><label for="todayDate">Date:</label></td>
+      <td><input type="date" id="todayDate" readonly style="width: 150px; height: 30px; font-size:22px;"></td>
+    </tr>
+    <tr>
+      <td><label for="todoDescription">To-Do Item Description:</label></td>
+      <td><textarea id="todoDescription" rows="3" cols="30" style="width: 300px; height: 30px;"></textarea></td>
+    </tr>
+    <tr>
+      <td><label for="targetDateTime">Target Date & Time:</label></td>
+      <td><input type="datetime-local" id="targetDateTime" style="width: 200px; height: 30px;"></td>
+    </tr>
+    <tr>
+      <td><label for="todoStatus">Status of a Task:</label></td>
+      <td><input type="text" id="todoStatus" value="Pending" disabled style="font-size: 25px; width: 150px; height: 30px; color: Red;"></td>
+    </tr>
+  </table>
 
-  <i><h1 style="color:rgb(185, 118, 18);">
-    To-Do Item Description:  
-    <textarea id="todoDescription" rows="3" cols="30" style="width: 300px; height: 30px;"></textarea>
-    <br><br>
-  </h1></i>
-
-  <i><h1 style="color:rgb(185, 118, 18);">
-    Target Date & Time: 
-    <input type="datetime-local" id="targetDateTime" style="width: 200px; height: 30px;">
-  </h1></i>
-
-  <i><h1 style="color:rgb(185, 118, 18);">
-    Status of a Task:  
-    <input type="checkbox" id="todoStatus" checked> Done
-    <br><br>
-  </h1></i>
-
-  <div style="margin-bottom: 20px;">
+  <div style="margin: 20px 0;">
     <button onclick="addToDo()" style="font-size: 20px; padding: 5px 20px; background-color: green; color: white; border: 5px; border-radius: 3px;">Add To-Do</button>
   </div>
 
@@ -49,8 +56,7 @@
         <th><h2 style="color:rgb(66, 13, 128);"><i>Current Status</i></h2></th>
       </tr>
     </thead>
-    <tbody>
-    </tbody>
+    <tbody></tbody>
   </table>
 
   <script src="script.js"></script>
