@@ -8,42 +8,50 @@
 <body>
   <style>
     body {
-      background-image: url('https://img.freepik.com/premium-photo/list-icon-notebook-with-completed-todo-list-3d-render_471402-428.jpg');
+      background-image: url('https://images.unsplash.com/photo-1644329843491-99edfc83de04?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
       background-size: cover;
       font-family: sans-serif;
-    }
-    label {
-      color: rgb(185, 118, 18);
-      font-size: 32px;
-      font-style: italic;
-    }
-    td {
-      padding: 10px 20px;
-      vertical-align: middle;
     }
   </style>
 
   <table>
     <tr>
-      <td><label for="todayDate">Date:</label></td>
-      <td><input type="date" id="todayDate" readonly style="width: 150px; height: 30px; font-size:22px;"></td>
+      <td>
+        <label style="font-size: 22px; color:rgb(185, 118, 18);">Date:</label>
+      </td>
+      <td>
+        <input type="date" id="todayDate" readonly style="width: 150px; height: 30px; font-size:22px;">
+      </td>
     </tr>
     <tr>
-      <td><label for="todoDescription">To-Do Item Description:</label></td>
-      <td><textarea id="todoDescription" rows="3" cols="30" style="width: 300px; height: 30px;"></textarea></td>
+      <td>
+        <label style="font-size: 22px; color:rgb(185, 118, 18);">To-Do Description:</label>
+      </td>
+      <td>
+        <textarea id="todoDescription" rows="3" cols="30" style="width: 300px; height: 30px;"></textarea>
+      </td>
     </tr>
     <tr>
-      <td><label for="targetDateTime">Target Date & Time:</label></td>
-      <td><input type="datetime-local" id="targetDateTime" style="width: 200px; height: 30px;"></td>
+      <td>
+        <label style="font-size: 22px; color:rgb(185, 118, 18);">Target Date & Time:</label>
+      </td>
+      <td>
+        <input type="datetime-local" id="targetDateTime" style="width: 200px; height: 30px;">
+      </td>
     </tr>
     <tr>
-      <td><label for="todoStatus">Status of a Task:</label></td>
-      <td><input type="text" id="todoStatus" value="Pending" disabled style="font-size: 25px; width: 150px; height: 30px; color: Red;"></td>
+      <td>
+        <label style="font-size: 22px; color:rgb(185, 118, 18);">Status of a Task:</label>
+      </td>
+      <td>
+        <input type="text" id="todoStatus" value="Pending" disabled style="font-size:25px; width: 150px; height: 30px; color:Red">
+      </td>
     </tr>
   </table>
 
-  <div style="margin: 20px 0;">
-    <button onclick="addToDo.run()" style="font-size: 20px; padding: 5px 20px; background-color: green; color: white; border: 5px; border-radius: 3px;">Add To-Do</button>
+  <br>
+  <div style="margin-bottom: 20px;">
+    <button onclick="addToDo()" style="font-size: 20px; padding: 5px 20px; background-color: green; color: white; border: 5px; border-radius: 3px;">Add To-Do</button>
   </div>
 
   <table border="1" id="todoTable" cellspacing="10">
@@ -55,7 +63,8 @@
         <th><h2 style="color:rgb(66, 13, 128);"><i>Current Status</i></h2></th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+    </tbody>
   </table>
 
   <script src="script.js"></script>
