@@ -4,8 +4,16 @@
   <title>To Do List Application</title>
 </head>
 <body>
+  <style>
+    body{
+      background-image: url("https://blog.lulu.com/content/images/2024/12/072120-ToDoList-Blog.png");
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: 100% 100%;
+    }
+  </style>
   <h2>Add a To Do Item</h2>
-  <form id="todoForm" onsubmit="return false;"> 
+  <form id="todoForm" onsubmit="return false;">
     <table border="0">
       <tr>
         <td><label for="todayDate">Today's Date:</label></td>
@@ -21,7 +29,7 @@
       </tr>
       <tr>
         <td><label for="status">Status:</label></td>
-        <td><input type="text" id="status" name="status" value="Pending" readonly></td>
+        <td><input type="text" id="status" name="status" value="Pending" disabled></td>
       </tr>
       <tr>
         <td colspan="2" align="center">
@@ -33,6 +41,7 @@
     </table>
   </form>
 
+
   <br>
   <h2>To Do List</h2>
   <table border="1" id="todoTable" style="width:100%; border-collapse: collapse;">
@@ -42,22 +51,19 @@
         <th>ToDo Description (Added/Edited Date)</th>
         <th>Target Date & Time</th>
         <th>Current Status</th>
-        <th>Action</th> 
+        <th>Status Action</th>
+        <th>Edit</th>
       </tr>
     </thead>
-    <tbody>
-
-    </tbody>
+    <tbody></tbody>
   </table>
+
 
 <script>
   var todoCounter = 0;
-
-  // Store todo objects with fields:
-  // { id, description, addedDate, editedDate (nullable), targetDateTime, status }
   var todos = [];
-
   var editingTodoId = null;
+
 
   function initializeForm() {
     var today = new Date();
@@ -66,24 +72,27 @@
     var dd = String(today.getDate()).padStart(2, '0');
     var formattedDate = yyyy + "-" + mm + "-" + dd;
 
+
     document.getElementById("todayDate").value = formattedDate;
     document.getElementById("status").value = "Pending";
 
-    var now = new Date();
-    var hh = String(now.getHours()).padStart(2, '0');
-    var min = String(now.getMinutes()).padStart(2, '0');
+
+    var hh = String(today.getHours()).padStart(2, '0');
+    var min = String(today.getMinutes()).padStart(2, '0');
     var minDateTime = formattedDate + "T" + hh + ":" + min;
     document.getElementById("targetDateTime").min = minDateTime;
   }
 
+
   window.onload = initializeForm;
+
 
   function getNextToDoID() {
     todoCounter += 1;
     return todoCounter;
   }
 
-  
+
   function formatDateTimeDisplay(dateTime) {
     var parts = dateTime.split("T");
     if (parts.length < 2) return dateTime;
@@ -95,7 +104,7 @@
     return day + ":" + month + ":" + year + " " + hour + ":" + min;
   }
 
-  
+
   function formatEditedDateDisplay(dateObj) {
     var hh = String(dateObj.getHours()).padStart(2, '0');
     var mm = String(dateObj.getMinutes()).padStart(2, '0');
@@ -105,15 +114,18 @@
     return hh + ":" + mm + " " + dd + "-" + MM + "-" + yyyy;
   }
 
+
   function addToDo() {
     var description = document.getElementById("todoDescription").value.trim();
     var dateTime = document.getElementById("targetDateTime").value;
     var addedDate = document.getElementById("todayDate").value;
 
+
     if (!description || !dateTime) {
       alert("Please enter all required fields.");
       return;
     }
+
 
     var nowISO = new Date().toISOString().slice(0, 16);
     if (dateTime < nowISO) {
@@ -121,7 +133,9 @@
       return;
     }
 
+
     var newId = getNextToDoID();
+
 
     var todo = {
       id: newId,
@@ -132,81 +146,112 @@
       status: "Pending"
     };
 
+
     todos.push(todo);
     renderTable();
     resetForm();
   }
 
+
   function renderTable() {
     var tbody = document.getElementById("todoTable").getElementsByTagName("tbody")[0];
     tbody.innerHTML = "";
 
+
     todos.forEach(function(todo) {
       var row = tbody.insertRow();
 
-      
+
+      // ID
       var cellId = row.insertCell(0);
       cellId.innerText = todo.id;
 
-      
+
+      // Description + dates
       var cellDesc = row.insertCell(1);
       var addedText = "(Added on " + todo.addedDate + ")";
       if (todo.editedDate) {
-        addedText += ", Edited on " + formatEditedDateDisplay(new Date(todo.editedDate));
+        addedText += ", (Edited on " + formatEditedDateDisplay(new Date(todo.editedDate)) + ")";
       }
-      cellDesc.innerHTML =
-        todo.description + "<br><small style='color:gray;'>" + addedText + "</small>";
+      cellDesc.innerHTML = todo.description + "<br><small style='color:gray;'>" + addedText + "</small>";
 
-      
+
+      // Target Date & Time
       var cellTarget = row.insertCell(2);
       cellTarget.innerText = formatDateTimeDisplay(todo.targetDateTime);
 
-    
-      var cellStatus = row.insertCell(3);
-      var select = document.createElement("select");
-      [
-        "Pending",
-        "To be Started",
-        "Half way Done",
-        "Almost Completed",
-        "Completed"
-      ].forEach(function(optionVal) {
-        var option = document.createElement("option");
-        option.value = optionVal;
-        option.text = optionVal;
-        if (todo.status === optionVal) option.selected = true;
-        select.appendChild(option);
-      });
-      select.addEventListener("change", function() {
-        todo.status = this.value;
-      });
-      cellStatus.appendChild(select);
 
+      // Status column
+      var cellStatus = row.insertCell(3);
+      cellStatus.innerText = todo.status.toLowerCase();
+      cellStatus.style.textTransform = "capitalize";
+      cellStatus.style.textAlign = "center";
+
+
+      // Status Action Button
       var cellAction = row.insertCell(4);
-      var editBtn = document.createElement("button");
-      editBtn.textContent = "Edit";
-      editBtn.onclick = function() {
-        enterEditMode(todo.id);
-      };
-      cellAction.appendChild(editBtn);
+      var actionBtn = document.createElement('button');
+      actionBtn.innerText = (todo.status === "Pending") ? "In Progress" :
+                            (todo.status === "In progress") ? "Completed" : "";
+      actionBtn.style.cursor = "pointer";
+
+
+      if (todo.status === "completed") {
+        actionBtn.disabled = true;
+        actionBtn.style.display = "none";
+      }
+
+
+      actionBtn.addEventListener('click', function () {
+        if (todo.status === "Pending") {
+          todo.status = "In progress";
+          cellStatus.innerText = "In progress";
+          actionBtn.innerText = "Completed";
+        } else if (todo.status === "In progress") {
+          todo.status = "completed";
+          cellStatus.innerText = "completed";
+          actionBtn.disabled = true;
+          actionBtn.style.display = "none";
+          cellEdit.innerHTML = ""; // Remove edit button
+        }
+      });
+
+
+      cellAction.appendChild(actionBtn);
+
+
+      // Edit Button
+      var cellEdit = row.insertCell(5);
+      if (todo.status !== "completed") {
+        var editBtn = document.createElement('button');
+        editBtn.innerText = "Edit";
+        editBtn.style.cursor = "pointer";
+        editBtn.onclick = function () {
+          enterEditMode(todo.id);
+        };
+        cellEdit.appendChild(editBtn);
+      }
     });
   }
+
 
   function enterEditMode(id) {
     var todo = todos.find(t => t.id === id);
     if (!todo) return;
 
-    editingTodoId = id;
 
+    editingTodoId = id;
     document.getElementById("todoDescription").value = todo.description;
     document.getElementById("targetDateTime").value = todo.targetDateTime;
     document.getElementById("todayDate").value = todo.addedDate;
     document.getElementById("status").value = todo.status;
 
+
     document.getElementById("addButton").style.display = "none";
     document.getElementById("updateButton").style.display = "inline";
     document.getElementById("cancelButton").style.display = "inline";
   }
+
 
   function cancelEdit() {
     editingTodoId = null;
@@ -216,18 +261,22 @@
     document.getElementById("cancelButton").style.display = "none";
   }
 
+
   function updateToDo() {
     if (editingTodoId === null) return;
+
 
     var description = document.getElementById("todoDescription").value.trim();
     var dateTime = document.getElementById("targetDateTime").value;
     var status = document.getElementById("status").value;
     var addedDate = document.getElementById("todayDate").value;
 
+
     if (!description || !dateTime) {
       alert("Please enter all required fields.");
       return;
     }
+
 
     var nowISO = new Date().toISOString().slice(0, 16);
     if (dateTime < nowISO) {
@@ -235,25 +284,28 @@
       return;
     }
 
+
     var todo = todos.find(t => t.id === editingTodoId);
     if (!todo) return;
+
 
     todo.description = description;
     todo.targetDateTime = dateTime;
     todo.status = status;
-
-    
     todo.editedDate = new Date().toISOString();
+
 
     renderTable();
     cancelEdit();
   }
+
 
   function resetForm() {
     document.getElementById("todoForm").reset();
     initializeForm();
   }
 </script>
-
 </body>
 </html>
+
+
