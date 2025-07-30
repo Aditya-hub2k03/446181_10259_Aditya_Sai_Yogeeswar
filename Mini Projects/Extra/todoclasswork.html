@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do List</title>
+  <style>
+    table, th, td {
+      border: 0px ;
+      border-collapse: collapse;
+      padding: 6px;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <tr>
+        <td><label>Date:</label></td>
+        <td><input type="date" id="date" ></td>
+    </tr>
+    <tr>
+        <td><label>ToDo: </label></td>
+        <td><input type="text" id="todo"></td>
+    </tr>
+    <tr>
+        <td><label>Target Date & Time:</label></td>
+        <td><input type="datetime-local" id="target"></td>
+    </tr>
+    <tr>
+        <td><label>Status: </label></td>
+        <td><input type="text" id="status" disabled></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><button onclick="addNewTodo()">SUBMIT</button></td>
+    </tr>
+  </table>
+  <script>
+    console.log("TEST-1");
+  </script>
+  <table id="todoTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>ToDo Desc</th>
+        <th>Target Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <script>
+    var todoList=[{
+        todoId:1,
+        todoDesc : "Read Page 6",
+        targetDate : "2025-07-30 11:35",
+        todoStatus : "PENDING",
+        createDate : "2025-07-29 10:00"
+      },
+      {
+        todoId:2,
+        todoDesc : "Write a document",
+        targetDate : "2025-07-30 12:40",
+        todoStatus : "COMPLETE",
+        createDate : "2025-07-29 10:00"
+      },
+      {
+        todoId:3,
+        todoDesc : "Prepare a Presentation",
+        targetDate : "2025-07-30 1:40",
+        todoStatus : "IN-PROGRESS",
+        createDate : "2025-07-29 10:00"
+      }];
+
+    function getMaxTodoId(max, value, index, array) {
+        return max.todoId > value.todoId ? max : value;
+    }
+
+    var maxObj = todoList.reduce(getMaxTodoId);
+    var todoId = maxObj.todoId;
+
+    function testClick(){
+        console.log("button clicked");
+    }
+
+    function renderListTable(value, index, array){
+        var newTodoTr = document.createElement("tr");
+        
+        var newTodoIdTd = document.createElement("td");
+        newTodoIdTd.innerText = value.todoId;
+        
+        var newTodoDescTd = document.createElement("td");
+        newTodoDescTd.innerText = value.todoDesc;
+        
+        var newTodoTargetDateTd = document.createElement("td");
+        newTodoTargetDateTd.innerText = value.targetDate;
+        
+        var newTodoStatusTd = document.createElement("td");
+        newTodoStatusTd.innerText = value.todoStatus;
+
+        newTodoTr.appendChild(newTodoIdTd);
+        newTodoTr.appendChild(newTodoDescTd);
+        newTodoTr.appendChild(newTodoTargetDateTd);
+        newTodoTr.appendChild(newTodoStatusTd);
+
+        // FIX: Append to tbody instead of the table
+        var todoTableBody = document.querySelector("#todoTable tbody");
+        todoTableBody.appendChild(newTodoTr);
+    }
+
+    function renderTodoItems(todoList){
+        // FIX: Clear old rows before rendering again
+        var todoTableBody = document.querySelector("#todoTable tbody");
+        todoTableBody.innerHTML = "";
+        todoList.map(renderListTable);
+    }
+
+    renderTodoItems(todoList);
+
+    function addNewTodo(todoDesc, targetDate, todoStatus) {
+        todoDesc = document.getElementById("todo").value;
+        targetDate = document.getElementById("target").value;
+        todoStatus = document.getElementById("status").value;
+        todoId++;
+
+        var todo = {};
+        todo.todoId     = todoId;
+        todo.todoDesc   = todoDesc;
+        todo.targetDate = targetDate;
+        todo.todoStatus = todoStatus;
+        todo.createDate = new Date();
+
+        todoList.push(todo);
+        renderTodoItems(todoList);
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do List</title>
+  <style>
+    table, th, td {
+      border: 0px solid green;
+      border-collapse: collapse;
+      padding: 6px;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <tr>
+        <td><label>Date:</label></td>
+        <td><input type="date" id="date" ></td>
+    </tr>
+    <tr>
+        <td><label>ToDo: </label></td>
+        <td><input type="text" id="todo"></td>
+    </tr>
+    <tr>
+        <td><label>Target Date & Time:</label></td>
+        <td><input type="datetime-local" id="target"></td>
+    </tr>
+    <tr>
+        <td><label>Status: </label></td>
+        <td><input type="text" id="status" disabled></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><button onclick="addNewTodo()">SUBMIT</button></td>
+    </tr>
+  </table>
+  <script>
+    console.log("TEST-1");
+    </script>
+  <table id="todoTable">
+      <tr>
+        <th>ID</th>
+        <th>ToDo Desc</th>
+        <th>Target Date</th>
+        <th>Status</th>
+      </tr>
+    <tbody>
+    </tbody>
+  </table>
+  <script>
+    var todoList=[{
+                    todoId:1,
+                    todoDesc : "Read Page 6",
+                    targetDate : "2025-07-30 11:35",
+                    todoStatus : "PENDING",
+                    createDate : "2025-07-29 10:00"
+                },
+                {
+                    todoId:2,
+                    todoDesc : "Write a document",
+                    targetDate : "2025-07-30 12:40",
+                    todoStatus : "COMPLETE",
+                    createDate : "2025-07-29 10:00"
+                },
+                {
+                    todoId:3,
+                    todoDesc : "Prepare a Presentation",
+                    targetDate : "2025-07-30 1:40",
+                    todoStatus : "IN-PROGRESS",
+                    createDate : "2025-07-29 10:00"
+                }];
+
+    function getMaxTodoId(max, value, index, array) {
+        return max.todoId > value.todoId ? max : value;
+    }
+    console.log("max Obj :"+todoList.reduce(getMaxTodoId));
+    var maxObj =todoList.reduce(getMaxTodoId);
+    console.log("max Id :"+maxObj.todoId);
+
+    var todoId = maxObj.todoId; 
+    console.log("TEST1");
+    //addTodo("TEST TODO-1", "2025-07-20","TODO");
+
+    function testClick(){
+        console.log("button clicked");
+
+    }
+
+    function renderListTable(value, index, array){
+        console.log(value.todoId+"\n"+value.todoDesc + "\n"+value.targetDate+"\n"+value.todoStatus+"\n"+value.createDate);
+        var newTodoTr = document.createElement("tr");
+        
+        var newTodoIdTd = document.createElement("td");
+        newTodoIdTd.innerText = value.todoId;
+        
+        var newTodoDescTd = document.createElement("td");
+        newTodoDescTd.innerText = value.todoDesc;
+        
+        var newTodoTargetDateTd = document.createElement("td");
+        newTodoTargetDateTd.innerText = value.targetDate;
+        
+        var newTodoStatusTd = document.createElement("td");
+        newTodoStatusTd.innerText = value.todoStatus;
+
+        newTodoTr.appendChild(newTodoIdTd);
+        newTodoTr.appendChild(newTodoDescTd);
+        newTodoTr.appendChild(newTodoTargetDateTd);
+        newTodoTr.appendChild(newTodoStatusTd);
+
+        var todoTable = document.getElementById("todoTable");
+        todoTable.appendChild(newTodoTr);
+    }
+
+    function renderTodoItems(todoList){
+        todoList.map(renderListTable);
+    }
+    renderTodoItems(todoList);
+
+    function addNewTodo(todoDesc, targetDate, todoStatus) {
+        todoDesc = document.getElementById("todo").value;
+        targetDate = document.getElementById("target").value;
+        todoStatus = document.getElementById("status").value;
+        todoId++;
+        console.log(todoId+"\n"+todoDesc + "\n"+targetDate+"\n"+todoStatus);
+        
+        // var newTodoTr = document.createElement("tr");
+        
+        // var newTodoIdTd = document.createElement("td");
+        // newTodoIdTd.innerText = todoId;
+        
+        // var newTodoDescTd = document.createElement("td");
+        // newTodoDescTd.innerText = todoDesc;
+        
+        // var newTodoTargetDateTd = document.createElement("td");
+        // newTodoTargetDateTd.innerText = targetDate;
+        
+        // var newTodoStatusTd = document.createElement("td");
+        // newTodoStatusTd.innerText = "PENDING";
+
+        // var newTodoStatusInProgressBtn = document.createElement("button");
+        // newTodoStatusInProgressBtn.innerText = "IN-PROGRESS";
+
+        // var newTodoStatusCompleteBtn = document.createElement("button");
+        // newTodoStatusCompleteBtn.innerText = "COMPLETE";
+
+        // newTodoStatusInProgressBtn.addEventListener("click",testClick);
+
+        // var newTodoStatusUpdateTd = document.createElement("td");
+        //newTodoStatusUpdateTd.innerHTML = "<span>"+"<button>InProgress</button>"+"</span>";
+        // newTodoStatusUpdateTd.appendChild(newTodoStatusInProgressBtn);
+        // newTodoStatusUpdateTd.appendChild(newTodoStatusCompleteBtn);
+
+        // newTodoTr.appendChild(newTodoIdTd);
+        // newTodoTr.appendChild(newTodoDescTd);
+        // newTodoTr.appendChild(newTodoTargetDateTd);
+        // newTodoTr.appendChild(newTodoStatusTd);
+        // newTodoTr.appendChild(newTodoStatusUpdateTd);
+
+        // var todoTable = document.getElementById("todoTable");
+        // todoTable.appendChild(newTodoTr);
+
+        // code to create ToDo obj and push it to TodoList
+        var todo={};
+        todo.todoId     =todoId;
+        todo.todoDesc   =todoDesc;
+        todo.targetDate = targetDate;
+        todo.todoStatus = todoStatus;
+        todo.createDate = new Date();
+        todoList.push(todo);
+        renderTodoItems(todoList);
+
+        console.log(todoList);
+
+    }
+    
+  </script>
+</body>
+</html> -->
+
