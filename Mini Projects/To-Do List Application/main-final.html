@@ -94,7 +94,7 @@
     <table
       border="1"
       id="todoTable"
-      style="width: 100%; border-collapse: collapse"
+      style="width: 100%; border-collapse: collapse; border-color: #000000"
     >
       <thead>
         <tr>
@@ -122,12 +122,21 @@
             <button onclick="searchTable()">Search</button>
             <button onclick="resetFilters()">Reset Filters</button>
           </th>
-          <th style="width: 350px">
-            Target Date & Time
+          <th style="width: 450px">
+            Target Date & Time<br />
+            Start Date:
             <input
-              type="text"
-              id="Search using DateTime"
-              placeholder="Search via Date/Time"
+              type="datetime-local"
+              id="Search using StartDate"
+              placeholder="Start Date"
+              name="search"
+              style="width: 120px; padding: 5px"
+            />
+            End Date:
+            <input
+              type="datetime-local"
+              id="Search using EndDate"
+              placeholder="End Date"
               name="search"
               style="width: 120px; padding: 5px"
             />
@@ -390,9 +399,12 @@
         const descInput = document
           .getElementById("Search using Description")
           .value.toLowerCase();
-        const dateTimeInput = document
-          .getElementById("Search using DateTime")
-          .value.toLowerCase();
+        const startDateInput = document.getElementById(
+          "Search using StartDate"
+        ).value;
+        const endDateInput = document.getElementById(
+          "Search using EndDate"
+        ).value;
         const statusInput = document
           .getElementById("Search using Status")
           .value.toLowerCase();
@@ -406,14 +418,35 @@
           const cells = row.getElementsByTagName("td");
           const idText = cells[0].innerText.toLowerCase();
           const descText = cells[1].innerText.toLowerCase();
-          const dateTimeText = cells[2].innerText.toLowerCase();
           const statusText = cells[3].innerText.toLowerCase();
+
+          // Get the todo item to access its original targetDateTime
+          const todoId = parseInt(cells[0].innerText);
+          const todo = todos.find((t) => t.id === todoId);
+          const todoDateTime = todo ? todo.targetDateTime : "";
 
           const matchId = !idInput || idText.includes(idInput);
           const matchDesc = !descInput || descText.includes(descInput);
-          const matchDateTime =
-            !dateTimeInput || dateTimeText.includes(dateTimeInput);
           const matchStatus = !statusInput || statusText.includes(statusInput);
+
+          // Date range matching logic
+          let matchDateTime = true;
+          if (startDateInput || endDateInput) {
+            const todoDate = new Date(todoDateTime);
+            const startDate = startDateInput ? new Date(startDateInput) : null;
+            const endDate = endDateInput ? new Date(endDateInput) : null;
+
+            if (startDate && endDate) {
+              // Case 1: Both start and end dates defined
+              matchDateTime = todoDate >= startDate && todoDate <= endDate;
+            } else if (startDate) {
+              // Case 2: Only start date defined
+              matchDateTime = todoDate >= startDate;
+            } else if (endDate) {
+              // Case 3: Only end date defined
+              matchDateTime = todoDate <= endDate;
+            }
+          }
 
           row.style.display =
             matchId && matchDesc && matchDateTime && matchStatus ? "" : "none";
@@ -423,7 +456,8 @@
       function resetFilters() {
         document.getElementById("Search using ID").value = "";
         document.getElementById("Search using Description").value = "";
-        document.getElementById("Search using DateTime").value = "";
+        document.getElementById("Search using StartDate").value = "";
+        document.getElementById("Search using EndDate").value = "";
         document.getElementById("Search using Status").value = "";
         searchTable();
       }
