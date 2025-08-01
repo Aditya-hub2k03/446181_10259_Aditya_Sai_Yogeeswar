@@ -11,14 +11,156 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <style>
-      body {
+      .blurred-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
         background-image: url("https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dG8lMjBkbyUyMGxpc3R8ZW58MHx8MHx8fDA%3D");
+        background-size: cover;
         background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: auto;
-        background-position: 50%;
+        background-position: center;
+        filter: blur(6px);
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+      }
+      form,
+      .content,
+      table,
+      h1,
+      h2 {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border: 3px solid black;
+        width: 450px;
+        text-align: center;
+        font-family: Arial, sans-serif;
+      }
+
+      .modal-buttons {
+        margin: 20px 0;
+      }
+
+      .modal-button {
+        padding: 8px 20px;
+        margin: 0 10px;
+        border: 2px solid black;
+        background-color: white;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .modal-button:hover {
+        background-color: #f0f0f0;
+      }
+
+      .status-section {
+        margin-top: 20px;
+        text-align: left;
+        padding-left: 50px;
+      }
+
+      .status-options {
+        margin-top: 10px;
+      }
+
+      .status-option {
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .status-checkbox {
+        width: 20px;
+        height: 20px;
+        border: 2px solid black;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+
+      .status-checkbox:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      .status-label {
+        font-size: 14px;
+        font-weight: bold;
       }
     </style>
+    <div class="blurred-bg"></div>
+
+    <!-- Past Date Confirmation Modal -->
+    <div id="pastDateModal" class="modal">
+      <div class="modal-content">
+        <h3>Confirm to add a task on a past date</h3>
+        <div class="modal-buttons">
+          <button class="modal-button" id="confirmYes">Yes</button>
+          <button class="modal-button" id="confirmNo">No</button>
+        </div>
+        <div class="status-section">
+          <p>
+            <strong>Select the status to of the task for the past date</strong>
+          </p>
+          <div class="status-options">
+            <div class="status-option">
+              <input
+                type="checkbox"
+                class="status-checkbox"
+                id="pendingStatus"
+                disabled
+              />
+              <label class="status-label">PENDING</label>
+            </div>
+            <div class="status-option">
+              <input
+                type="checkbox"
+                class="status-checkbox"
+                id="inProgressStatus"
+                disabled
+              />
+              <label class="status-label">IN PROGRESS</label>
+            </div>
+            <div class="status-option">
+              <input
+                type="checkbox"
+                class="status-checkbox"
+                id="completedStatus"
+                disabled
+              />
+              <label class="status-label">COMPLETED</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <h1 style="text-align: center">Add a To Do Item</h1>
     <form id="todoForm" onsubmit="return false;">
       <table border="0" style="margin-left: auto; margin-right: auto">
@@ -190,6 +332,7 @@
       var todoCounter = 0;
       var todos = [];
       var editingTodoId = null;
+      var pendingPastDateTask = null;
 
       function initializeForm() {
         var today = new Date();
@@ -200,14 +343,78 @@
 
         document.getElementById("todayDate").value = formattedDate;
         document.getElementById("status").value = "Pending";
-
-        var hh = String(today.getHours()).padStart(2, "0");
-        var min = String(today.getMinutes()).padStart(2, "0");
-        var minDateTime = formattedDate + "T" + hh + ":" + min;
-        document.getElementById("targetDateTime").min = minDateTime;
       }
 
-      window.onload = initializeForm;
+      window.onload = function () {
+        initializeForm();
+        setupModalEvents();
+      };
+
+      function setupModalEvents() {
+        const modal = document.getElementById("pastDateModal");
+        const yesBtn = document.getElementById("confirmYes");
+        const noBtn = document.getElementById("confirmNo");
+        const statusCheckboxes = [
+          "pendingStatus",
+          "inProgressStatus",
+          "completedStatus",
+        ];
+
+        // Yes button click - enable status selection
+        yesBtn.addEventListener("click", function () {
+          statusCheckboxes.forEach((id) => {
+            document.getElementById(id).disabled = false;
+          });
+        });
+
+        // No button click - close modal and cancel
+        noBtn.addEventListener("click", function () {
+          modal.style.display = "none";
+          pendingPastDateTask = null;
+          resetStatusCheckboxes();
+        });
+
+        // Status checkbox handling
+        statusCheckboxes.forEach((id) => {
+          document.getElementById(id).addEventListener("change", function () {
+            if (this.checked) {
+              // Uncheck other checkboxes
+              statusCheckboxes.forEach((otherId) => {
+                if (otherId !== id) {
+                  document.getElementById(otherId).checked = false;
+                }
+              });
+
+              // Get selected status
+              let selectedStatus = "";
+              if (id === "pendingStatus") selectedStatus = "Pending";
+              else if (id === "inProgressStatus")
+                selectedStatus = "In progress";
+              else if (id === "completedStatus") selectedStatus = "completed";
+
+              // Add the task with selected status
+              addPastDateTask(selectedStatus);
+
+              // Close modal
+              modal.style.display = "none";
+              resetStatusCheckboxes();
+            }
+          });
+        });
+      }
+
+      function resetStatusCheckboxes() {
+        const statusCheckboxes = [
+          "pendingStatus",
+          "inProgressStatus",
+          "completedStatus",
+        ];
+        statusCheckboxes.forEach((id) => {
+          const checkbox = document.getElementById(id);
+          checkbox.checked = false;
+          checkbox.disabled = true;
+        });
+      }
 
       function getNextToDoID() {
         todoCounter += 1;
@@ -252,12 +459,19 @@
 
         var nowISO = new Date().toISOString().slice(0, 16);
         if (dateTime < nowISO) {
-          alert("You cannot select a past date and time!");
+          // Past date selected - show confirmation modal
+          pendingPastDateTask = {
+            description: description,
+            addedDate: addedDate,
+            targetDateTime: dateTime,
+          };
+
+          document.getElementById("pastDateModal").style.display = "block";
           return;
         }
 
+        // Future date - add normally
         var newId = getNextToDoID();
-
         var todo = {
           id: newId,
           description: description,
@@ -270,6 +484,25 @@
         todos.push(todo);
         renderTable();
         resetForm();
+      }
+
+      function addPastDateTask(selectedStatus) {
+        if (!pendingPastDateTask) return;
+
+        var newId = getNextToDoID();
+        var todo = {
+          id: newId,
+          description: pendingPastDateTask.description,
+          addedDate: pendingPastDateTask.addedDate,
+          editedDate: null,
+          targetDateTime: pendingPastDateTask.targetDateTime,
+          status: selectedStatus,
+        };
+
+        todos.push(todo);
+        renderTable();
+        resetForm();
+        pendingPastDateTask = null;
       }
 
       function renderTable() {
@@ -397,7 +630,7 @@
 
         var nowISO = new Date().toISOString().slice(0, 16);
         if (dateTime < nowISO) {
-          alert("You cannot select a past date and time!");
+          alert("You cannot select a past date and time for updates!");
           return;
         }
 
@@ -417,6 +650,7 @@
         document.getElementById("todoForm").reset();
         initializeForm();
       }
+
       function globalSearch() {
         const keywordInput = document
           .getElementById("globalSearchKeyword")
@@ -481,6 +715,7 @@
         globalSearch();
       }
     </script>
+    <!-- date time plugin -->
     <script>
       flatpickr("#targetDateTime", {
         enableTime: true,
