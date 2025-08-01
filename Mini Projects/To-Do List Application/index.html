@@ -4,6 +4,12 @@
     <title>To Do List Application</title>
   </head>
   <body>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <style>
       body {
         background-image: url("https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dG8lMjBkbyUyMGxpc3R8ZW58MHx8MHx8fDA%3D");
@@ -44,8 +50,9 @@
           <td><label for="targetDateTime">Target Date & Time:</label></td>
           <td>
             <input
-              type="datetime-local"
+              type="text"
               id="targetDateTime"
+              placeholder="Select target Date and time"
               name="targetDateTime"
               required
             />
@@ -139,8 +146,9 @@
       <div>
         Start Date:
         <input
-          type="datetime-local"
+          type="text"
           id="globalStartDate"
+          placeholder="Select Start Date and time"
           style="
             width: 160px;
             padding: 5px;
@@ -150,8 +158,9 @@
         />
         End Date:
         <input
-          type="datetime-local"
+          type="text"
           id="globalEndDate"
+          placeholder="Select End Date and time"
           style="width: 160px; padding: 5px; margin-left: 5px"
         />
       </div>
@@ -471,6 +480,20 @@
         document.getElementById("globalEndDate").value = "";
         globalSearch();
       }
+    </script>
+    <script>
+      flatpickr("#targetDateTime", {
+        enableTime: true,
+        dateFormat: "Y-m-d\\TH:i",
+      });
+      flatpickr("#globalStartDate", {
+        enableTime: true,
+        dateFormat: "Y-m-d\\TH:i",
+      });
+      flatpickr("#globalEndDate", {
+        enableTime: true,
+        dateFormat: "Y-m-d\\TH:i",
+      });
     </script>
   </body>
 </html>
