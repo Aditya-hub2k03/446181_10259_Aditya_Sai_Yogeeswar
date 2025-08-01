@@ -2,14 +2,11 @@
 <html>
   <head>
     <title>To Do List Application</title>
-  </head>
-  <body>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
     <style>
       .blurred-bg {
         position: fixed;
@@ -24,7 +21,6 @@
         background-position: center;
         filter: blur(6px);
       }
-
       body {
         margin: 0;
         padding: 0;
@@ -40,7 +36,6 @@
         position: relative;
         z-index: 1;
       }
-
       /* Modal Styles */
       .modal {
         display: none;
@@ -52,7 +47,6 @@
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);
       }
-
       .modal-content {
         background-color: white;
         margin: 10% auto;
@@ -62,11 +56,9 @@
         text-align: center;
         font-family: Arial, sans-serif;
       }
-
       .modal-buttons {
         margin: 20px 0;
       }
-
       .modal-button {
         padding: 8px 20px;
         margin: 0 10px;
@@ -75,27 +67,22 @@
         cursor: pointer;
         font-size: 14px;
       }
-
       .modal-button:hover {
         background-color: #f0f0f0;
       }
-
       .status-section {
         margin-top: 20px;
         text-align: left;
         padding-left: 50px;
       }
-
       .status-options {
         margin-top: 10px;
       }
-
       .status-option {
         margin: 10px 0;
         display: flex;
         align-items: center;
       }
-
       .status-checkbox {
         width: 20px;
         height: 20px;
@@ -103,19 +90,18 @@
         margin-right: 10px;
         cursor: pointer;
       }
-
       .status-checkbox:disabled {
         cursor: not-allowed;
         opacity: 0.5;
       }
-
       .status-label {
         font-size: 14px;
         font-weight: bold;
       }
     </style>
+  </head>
+  <body>
     <div class="blurred-bg"></div>
-
     <!-- Past Date Confirmation Modal -->
     <div id="pastDateModal" class="modal">
       <div class="modal-content">
@@ -160,7 +146,6 @@
         </div>
       </div>
     </div>
-
     <h1 style="text-align: center">Add a To Do Item</h1>
     <form id="todoForm" onsubmit="return false;">
       <table border="0" style="margin-left: auto; margin-right: auto">
@@ -244,9 +229,7 @@
         </tr>
       </table>
     </form>
-
     <br />
-
     <!-- Global Search Bar -->
     <div
       style="
@@ -309,7 +292,6 @@
     </div>
     <h2 style="text-align: center">To Do List</h2>
     <br />
-
     <table
       border="2"
       id="todoTable"
@@ -317,17 +299,16 @@
     >
       <thead>
         <tr>
-          <th style="width: 250px">Todo ID</th>
+          <th style="width: 100px">Todo ID</th>
           <th style="width: 370px">ToDo Description</th>
-          <th style="width: 350px">Target Date & Time</th>
+          <th style="width: 200px">Target Date & Time</th>
           <th style="width: 320px">Current Status</th>
-          <th>Status Action</th>
-          <th>Edit</th>
+          <th style="width: 200px">Status Action</th>
+          <th style="width: 50px">Edit</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
-
     <script>
       var todoCounter = 0;
       var todos = [];
@@ -340,7 +321,6 @@
         var mm = String(today.getMonth() + 1).padStart(2, "0");
         var dd = String(today.getDate()).padStart(2, "0");
         var formattedDate = yyyy + "-" + mm + "-" + dd;
-
         document.getElementById("todayDate").value = formattedDate;
         document.getElementById("status").value = "Pending";
       }
@@ -360,42 +340,34 @@
           "completedStatus",
         ];
 
-        // Yes button click - enable status selection
         yesBtn.addEventListener("click", function () {
           statusCheckboxes.forEach((id) => {
             document.getElementById(id).disabled = false;
           });
         });
 
-        // No button click - close modal and cancel
         noBtn.addEventListener("click", function () {
           modal.style.display = "none";
           pendingPastDateTask = null;
           resetStatusCheckboxes();
         });
 
-        // Status checkbox handling
         statusCheckboxes.forEach((id) => {
           document.getElementById(id).addEventListener("change", function () {
             if (this.checked) {
-              // Uncheck other checkboxes
               statusCheckboxes.forEach((otherId) => {
                 if (otherId !== id) {
                   document.getElementById(otherId).checked = false;
                 }
               });
 
-              // Get selected status
               let selectedStatus = "";
               if (id === "pendingStatus") selectedStatus = "Pending";
               else if (id === "inProgressStatus")
                 selectedStatus = "In progress";
               else if (id === "completedStatus") selectedStatus = "completed";
 
-              // Add the task with selected status
               addPastDateTask(selectedStatus);
-
-              // Close modal
               modal.style.display = "none";
               resetStatusCheckboxes();
             }
@@ -459,18 +431,15 @@
 
         var nowISO = new Date().toISOString().slice(0, 16);
         if (dateTime < nowISO) {
-          // Past date selected - show confirmation modal
           pendingPastDateTask = {
             description: description,
             addedDate: addedDate,
             targetDateTime: dateTime,
           };
-
           document.getElementById("pastDateModal").style.display = "block";
           return;
         }
 
-        // Future date - add normally
         var newId = getNextToDoID();
         var todo = {
           id: newId,
@@ -480,7 +449,6 @@
           targetDateTime: dateTime,
           status: "Pending",
         };
-
         todos.push(todo);
         renderTable();
         resetForm();
@@ -498,7 +466,6 @@
           targetDateTime: pendingPastDateTask.targetDateTime,
           status: selectedStatus,
         };
-
         todos.push(todo);
         renderTable();
         resetForm();
@@ -510,15 +477,12 @@
           .getElementById("todoTable")
           .getElementsByTagName("tbody")[0];
         tbody.innerHTML = "";
-
         todos.forEach(function (todo) {
           var row = tbody.insertRow();
 
-          // ID
           var cellId = row.insertCell(0);
           cellId.innerText = todo.id;
 
-          // Description + dates
           var cellDesc = row.insertCell(1);
           var addedText = "(Added on " + todo.addedDate + ")";
           if (todo.editedDate) {
@@ -527,30 +491,26 @@
               formatEditedDateDisplay(new Date(todo.editedDate)) +
               ")";
           }
-
           cellDesc.innerHTML =
             todo.description +
-            "<br><small style='color:gray;'>" +
+            '<br><small style="color:gray;">' +
             addedText +
             "</small>";
 
-          // Target Date & Time
           var cellTarget = row.insertCell(2);
           cellTarget.innerText = formatDateTimeDisplay(todo.targetDateTime);
 
-          // Status column
           var cellStatus = row.insertCell(3);
           cellStatus.innerText = todo.status.toLowerCase();
           cellStatus.style.textTransform = "capitalize";
           cellStatus.style.textAlign = "center";
 
-          // Status Action Button
           var cellAction = row.insertCell(4);
           var actionBtn = document.createElement("button");
           actionBtn.innerText =
             todo.status === "Pending"
               ? "In Progress"
-              : todo.status === "In progress"
+              : todo.status.startsWith("In progress")
               ? "Completed"
               : "";
           actionBtn.style.cursor = "pointer";
@@ -560,25 +520,62 @@
             actionBtn.style.display = "none";
           }
 
+          var dateTimeInput = document.createElement("input");
+          dateTimeInput.type = "text";
+          dateTimeInput.className = "status-date-time";
+          dateTimeInput.style.display = "none";
+          dateTimeInput.placeholder = "Select Date and Time";
+
           actionBtn.addEventListener("click", function () {
             if (todo.status === "Pending") {
               todo.status = "In progress";
               cellStatus.innerText = "In progress";
               actionBtn.innerText = "Completed";
-            } else if (todo.status === "In progress") {
+              dateTimeInput.style.display = "block";
+              flatpickr(dateTimeInput, {
+                enableTime: true,
+                dateFormat: "Y-m-d\\TH:i",
+                onClose: function (selectedDates) {
+                  if (selectedDates.length > 0) {
+                    var selectedDateTime = selectedDates[0];
+                    todo.status =
+                      "In progress (Started on " +
+                      formatEditedDateDisplay(selectedDateTime) +
+                      ")";
+                    cellStatus.innerText = todo.status;
+                    dateTimeInput.style.display = "none";
+                  }
+                },
+              });
+            } else if (todo.status.startsWith("In progress")) {
               todo.status = "completed";
-              cellStatus.innerText = "completed";
-              actionBtn.disabled = true;
-              actionBtn.style.display = "none";
-              cellEdit.innerHTML = ""; // Remove edit button
+              dateTimeInput.style.display = "block";
+              flatpickr(dateTimeInput, {
+                enableTime: true,
+                dateFormat: "Y-m-d\\TH:i",
+                onClose: function (selectedDates) {
+                  if (selectedDates.length > 0) {
+                    var selectedDateTime = selectedDates[0];
+                    todo.status =
+                      "completed (Completed on " +
+                      formatEditedDateDisplay(selectedDateTime) +
+                      ")";
+                    cellStatus.innerText = todo.status;
+                    dateTimeInput.style.display = "none";
+                    actionBtn.disabled = true;
+                    actionBtn.style.display = "none";
+                    cellEdit.innerHTML = "";
+                  }
+                },
+              });
             }
           });
 
           cellAction.appendChild(actionBtn);
+          cellAction.appendChild(dateTimeInput);
 
-          // Edit Button
           var cellEdit = row.insertCell(5);
-          if (todo.status !== "completed") {
+          if (!todo.status.startsWith("completed")) {
             var editBtn = document.createElement("button");
             editBtn.innerText = "Edit";
             editBtn.style.cursor = "pointer";
@@ -593,13 +590,11 @@
       function enterEditMode(id) {
         var todo = todos.find((t) => t.id === id);
         if (!todo) return;
-
         editingTodoId = id;
         document.getElementById("todoDescription").value = todo.description;
         document.getElementById("targetDateTime").value = todo.targetDateTime;
         document.getElementById("todayDate").value = todo.addedDate;
         document.getElementById("status").value = todo.status;
-
         document.getElementById("addButton").style.display = "none";
         document.getElementById("updateButton").style.display = "inline";
         document.getElementById("cancelButton").style.display = "inline";
@@ -615,7 +610,6 @@
 
       function updateToDo() {
         if (editingTodoId === null) return;
-
         var description = document
           .getElementById("todoDescription")
           .value.trim();
@@ -636,12 +630,10 @@
 
         var todo = todos.find((t) => t.id === editingTodoId);
         if (!todo) return;
-
         todo.description = description;
         todo.targetDateTime = dateTime;
         todo.status = status;
         todo.editedDate = new Date().toISOString();
-
         renderTable();
         cancelEdit();
       }
@@ -658,7 +650,6 @@
           .trim();
         const startDateInput = document.getElementById("globalStartDate").value;
         const endDateInput = document.getElementById("globalEndDate").value;
-
         const tbody = document
           .getElementById("todoTable")
           .getElementsByTagName("tbody")[0];
@@ -669,13 +660,10 @@
           const idText = cells[0].innerText.toLowerCase();
           const descText = cells[1].innerText.toLowerCase();
           const statusText = cells[3].innerText.toLowerCase();
-
-          // Get the todo item to access its original targetDateTime
           const todoId = parseInt(cells[0].innerText);
           const todo = todos.find((t) => t.id === todoId);
           const todoDateTime = todo ? todo.targetDateTime : "";
 
-          // Keyword matching - search across all text fields
           let matchKeyword = true;
           if (keywordInput) {
             matchKeyword =
@@ -684,7 +672,6 @@
               statusText.includes(keywordInput);
           }
 
-          // Date range matching logic (same as before)
           let matchDateTime = true;
           if (startDateInput || endDateInput) {
             const todoDate = new Date(todoDateTime);
@@ -692,18 +679,14 @@
             const endDate = endDateInput ? new Date(endDateInput) : null;
 
             if (startDate && endDate) {
-              // Case 1: Both start and end dates defined
               matchDateTime = todoDate >= startDate && todoDate <= endDate;
             } else if (startDate) {
-              // Case 2: Only start date defined
               matchDateTime = todoDate >= startDate;
             } else if (endDate) {
-              // Case 3: Only end date defined
               matchDateTime = todoDate <= endDate;
             }
           }
 
-          // Show row only if both keyword and date conditions are met
           row.style.display = matchKeyword && matchDateTime ? "" : "none";
         }
       }
@@ -715,7 +698,6 @@
         globalSearch();
       }
     </script>
-    <!-- date time plugin -->
     <script>
       flatpickr("#targetDateTime", {
         enableTime: true,
