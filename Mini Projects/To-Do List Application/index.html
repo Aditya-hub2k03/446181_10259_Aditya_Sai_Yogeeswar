@@ -299,12 +299,12 @@
     >
       <thead>
         <tr>
-          <th style="width: 100px">Todo ID</th>
+          <th style="width: 250px">Todo ID</th>
           <th style="width: 370px">ToDo Description</th>
-          <th style="width: 200px">Target Date & Time</th>
+          <th style="width: 350px">Target Date & Time</th>
           <th style="width: 320px">Current Status</th>
-          <th style="width: 200px">Status Action</th>
-          <th style="width: 50px">Edit</th>
+          <th>Status Action</th>
+          <th>Edit</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -417,6 +417,33 @@
         return hh + ":" + mm + " " + dd + "-" + MM + "-" + yyyy;
       }
 
+      function sortTodos() {
+        const statusOrder = { "In progress": 1, Pending: 2, completed: 3 };
+
+        todos.sort((a, b) => {
+          const statusA = a.status.startsWith("In progress")
+            ? "In progress"
+            : a.status.startsWith("completed")
+            ? "completed"
+            : "Pending";
+          const statusB = b.status.startsWith("In progress")
+            ? "In progress"
+            : b.status.startsWith("completed")
+            ? "completed"
+            : "Pending";
+
+          if (statusOrder[statusA] !== statusOrder[statusB]) {
+            return statusOrder[statusA] - statusOrder[statusB];
+          }
+
+          return new Date(a.targetDateTime) - new Date(b.targetDateTime);
+        });
+
+        todos.forEach((todo, index) => {
+          todo.id = index + 1;
+        });
+      }
+
       function addToDo() {
         var description = document
           .getElementById("todoDescription")
@@ -450,6 +477,7 @@
           status: "Pending",
         };
         todos.push(todo);
+        sortTodos();
         renderTable();
         resetForm();
       }
@@ -467,6 +495,7 @@
           status: selectedStatus,
         };
         todos.push(todo);
+        sortTodos();
         renderTable();
         resetForm();
         pendingPastDateTask = null;
@@ -544,6 +573,8 @@
                       ")";
                     cellStatus.innerText = todo.status;
                     dateTimeInput.style.display = "none";
+                    sortTodos();
+                    renderTable();
                   }
                 },
               });
@@ -565,6 +596,8 @@
                     actionBtn.disabled = true;
                     actionBtn.style.display = "none";
                     cellEdit.innerHTML = "";
+                    sortTodos();
+                    renderTable();
                   }
                 },
               });
@@ -634,6 +667,7 @@
         todo.targetDateTime = dateTime;
         todo.status = status;
         todo.editedDate = new Date().toISOString();
+        sortTodos();
         renderTable();
         cancelEdit();
       }
