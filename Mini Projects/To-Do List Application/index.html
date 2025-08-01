@@ -36,6 +36,13 @@
         position: relative;
         z-index: 1;
       }
+      .sort-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0 5px;
+      }
       /* Modal Styles */
       .modal {
         display: none;
@@ -299,10 +306,19 @@
     >
       <thead>
         <tr>
-          <th style="width: 250px">Todo ID</th>
+          <th style="width: 250px">
+            Todo ID
+            <button class="sort-btn" onclick="sortById()">↑↓</button>
+          </th>
           <th style="width: 370px">ToDo Description</th>
-          <th style="width: 350px">Target Date & Time</th>
-          <th style="width: 320px">Current Status</th>
+          <th style="width: 350px">
+            Target Date & Time
+            <button class="sort-btn" onclick="sortByDateTime()">↑↓</button>
+          </th>
+          <th style="width: 320px">
+            Current Status
+            <button class="sort-btn" onclick="sortByStatus()">↑↓</button>
+          </th>
           <th>Status Action</th>
           <th>Edit</th>
         </tr>
@@ -314,6 +330,11 @@
       var todos = [];
       var editingTodoId = null;
       var pendingPastDateTask = null;
+      var sortConfig = {
+        id: { ascending: true },
+        dateTime: { ascending: true },
+        status: { order: ["In progress", "Pending", "completed"] },
+      };
 
       function initializeForm() {
         var today = new Date();
@@ -417,9 +438,55 @@
         return hh + ":" + mm + " " + dd + "-" + MM + "-" + yyyy;
       }
 
-      function sortTodos() {
-        const statusOrder = { "In progress": 1, Pending: 2, completed: 3 };
+      function sortById() {
+        sortConfig.id.ascending = !sortConfig.id.ascending;
+        sortTodos();
+        renderTable();
+      }
 
+      function sortByDateTime() {
+        sortConfig.dateTime.ascending = !sortConfig.dateTime.ascending;
+        sortTodos();
+        renderTable();
+      }
+
+      function sortByStatus() {
+        const currentOrder = sortConfig.status.order;
+        if (
+          currentOrder[0] === "In progress" &&
+          currentOrder[1] === "Pending"
+        ) {
+          sortConfig.status.order = ["Pending", "completed", "In progress"];
+        } else if (
+          currentOrder[0] === "Pending" &&
+          currentOrder[1] === "completed"
+        ) {
+          sortConfig.status.order = ["completed", "In progress", "Pending"];
+        } else {
+          sortConfig.status.order = ["In progress", "Pending", "completed"];
+        }
+        sortTodos();
+        renderTable();
+      }
+
+      function sortTodos() {
+        if (sortConfig.id.ascending) {
+          todos.sort((a, b) => a.id - b.id);
+        } else {
+          todos.sort((a, b) => b.id - a.id);
+        }
+
+        if (sortConfig.dateTime.ascending) {
+          todos.sort(
+            (a, b) => new Date(a.targetDateTime) - new Date(b.targetDateTime)
+          );
+        } else {
+          todos.sort(
+            (a, b) => new Date(b.targetDateTime) - new Date(a.targetDateTime)
+          );
+        }
+
+        const statusOrder = sortConfig.status.order;
         todos.sort((a, b) => {
           const statusA = a.status.startsWith("In progress")
             ? "In progress"
@@ -431,16 +498,7 @@
             : b.status.startsWith("completed")
             ? "completed"
             : "Pending";
-
-          if (statusOrder[statusA] !== statusOrder[statusB]) {
-            return statusOrder[statusA] - statusOrder[statusB];
-          }
-
-          return new Date(a.targetDateTime) - new Date(b.targetDateTime);
-        });
-
-        todos.forEach((todo, index) => {
-          todo.id = index + 1;
+          return statusOrder.indexOf(statusA) - statusOrder.indexOf(statusB);
         });
       }
 
