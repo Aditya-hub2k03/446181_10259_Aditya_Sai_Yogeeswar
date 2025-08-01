@@ -1,72 +1,476 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>To-Do List Application</title>
-</head>
-<body>
-  <style>
-    body {
-      background-image: url('https://images.unsplash.com/photo-1644329843491-99edfc83de04?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-      background-size: cover;
-      font-family: sans-serif;
-    }
-  </style>
+<html>
+  <head>
+    <title>To Do List Application</title>
+  </head>
+  <body>
+    <style>
+      body {
+        background-image: url("https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dG8lMjBkbyUyMGxpc3R8ZW58MHx8MHx8fDA%3D");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: auto;
+        background-position: 50%;
+      }
+    </style>
+    <h1 style="text-align: center">Add a To Do Item</h1>
+    <form id="todoForm" onsubmit="return false;">
+      <table border="0" style="margin-left: auto; margin-right: auto">
+        <tr>
+          <td><label for="todayDate">Today's Date:</label></td>
+          <td>
+            <input
+              type="date"
+              id="todayDate"
+              name="todayDate"
+              required
+              readonly
+              style="background: 0; border: 0px; color: green"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td><label for="todoDescription">To Do Description:</label></td>
+          <td>
+            <input
+              type="text"
+              id="todoDescription"
+              name="todoDescription"
+              required
+            />
+          </td>
+        </tr>
+        <tr>
+          <td><label for="targetDateTime">Target Date & Time:</label></td>
+          <td>
+            <input
+              type="datetime-local"
+              id="targetDateTime"
+              name="targetDateTime"
+              required
+            />
+          </td>
+        </tr>
+        <tr>
+          <td><label for="status">Status:</label></td>
+          <td>
+            <input
+              type="text"
+              id="status"
+              name="status"
+              value="Pending"
+              disabled
+              style="
+                border: 0px;
+                background-color: 0;
+                font-size: 90%;
+                font-weight: bold;
+              "
+            />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input
+              type="button"
+              id="addButton"
+              value="Add To Do"
+              onclick="addToDo()"
+            />
+            <input
+              type="button"
+              id="updateButton"
+              value="Update"
+              onclick="updateToDo()"
+              style="display: none"
+            />
+            <input
+              type="button"
+              value="Cancel"
+              id="cancelButton"
+              onclick="cancelEdit()"
+              style="display: none"
+            />
+          </td>
+        </tr>
+      </table>
+    </form>
 
-  <table>
-    <tr>
-      <td>
-        <label style="font-size: 22px; color:rgb(185, 118, 18);">Date:</label>
-      </td>
-      <td>
-        <input type="date" id="todayDate" readonly style="width: 150px; height: 30px; font-size:22px;">
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label style="font-size: 22px; color:rgb(185, 118, 18);">To-Do Description:</label>
-      </td>
-      <td>
-        <textarea id="todoDescription" rows="3" cols="30" style="width: 300px; height: 30px;"></textarea>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label style="font-size: 22px; color:rgb(185, 118, 18);">Target Date & Time:</label>
-      </td>
-      <td>
-        <input type="datetime-local" id="targetDateTime" style="width: 200px; height: 30px;">
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label style="font-size: 22px; color:rgb(185, 118, 18);">Status of a Task:</label>
-      </td>
-      <td>
-        <input type="text" id="todoStatus" value="Pending" disabled style="font-size:25px; width: 150px; height: 30px; color:Red">
-      </td>
-    </tr>
-  </table>
+    <br />
 
-  <br>
-  <div style="margin-bottom: 20px;">
-    <button onclick="addToDo()" style="font-size: 20px; padding: 5px 20px; background-color: green; color: white; border: 5px; border-radius: 3px;">Add To-Do</button>
-  </div>
+    <!-- Global Search Bar -->
+    <div
+      style="
+        margin-bottom: 20px;
+        text-align: center;
+        border: 2px solid #000;
+        padding: 20px;
+        background-color: #d2bfb2;
+        margin-left: auto;
+        margin-right: auto;
+        width: 650px;
+      "
+    >
+      <div style="margin-bottom: 10px">
+        <input
+          type="text"
+          id="globalSearchKeyword"
+          placeholder="Search by keyword..."
+          style="
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+          "
+        />
+        <button
+          onclick="globalSearch()"
+          style="padding: 8px 15px; cursor: pointer"
+        >
+          🔍
+        </button>
+        <button
+          onclick="resetGlobalFilters()"
+          style="padding: 8px 15px; cursor: pointer; margin-left: 5px"
+        >
+          Reset
+        </button>
+      </div>
+      <div>
+        Start Date:
+        <input
+          type="datetime-local"
+          id="globalStartDate"
+          style="
+            width: 160px;
+            padding: 5px;
+            margin-right: 15px;
+            margin-left: 5px;
+          "
+        />
+        End Date:
+        <input
+          type="datetime-local"
+          id="globalEndDate"
+          style="width: 160px; padding: 5px; margin-left: 5px"
+        />
+      </div>
+    </div>
+    <h2 style="text-align: center">To Do List</h2>
+    <br />
 
-  <table border="1" id="todoTable" cellspacing="10">
-    <thead>
-      <tr>
-        <th><h2 style="color:rgb(66, 13, 128);"><i>To-Do ID</i></h2></th>
-        <th><h2 style="color:rgb(66, 13, 128);"><i>To-Do Description</i></h2></th>
-        <th><h2 style="color:rgb(66, 13, 128);"><i>Target Date & Time</i></h2></th>
-        <th><h2 style="color:rgb(66, 13, 128);"><i>Current Status</i></h2></th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
+    <table
+      border="2"
+      id="todoTable"
+      style="width: 100%; border-collapse: collapse; border-color: #000000"
+    >
+      <thead>
+        <tr>
+          <th style="width: 250px">Todo ID</th>
+          <th style="width: 370px">ToDo Description</th>
+          <th style="width: 350px">Target Date & Time</th>
+          <th style="width: 320px">Current Status</th>
+          <th>Status Action</th>
+          <th>Edit</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-  <script src="script.js"></script>
-</body>
+    <script>
+      var todoCounter = 0;
+      var todos = [];
+      var editingTodoId = null;
+
+      function initializeForm() {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, "0");
+        var dd = String(today.getDate()).padStart(2, "0");
+        var formattedDate = yyyy + "-" + mm + "-" + dd;
+
+        document.getElementById("todayDate").value = formattedDate;
+        document.getElementById("status").value = "Pending";
+
+        var hh = String(today.getHours()).padStart(2, "0");
+        var min = String(today.getMinutes()).padStart(2, "0");
+        var minDateTime = formattedDate + "T" + hh + ":" + min;
+        document.getElementById("targetDateTime").min = minDateTime;
+      }
+
+      window.onload = initializeForm;
+
+      function getNextToDoID() {
+        todoCounter += 1;
+        return todoCounter;
+      }
+
+      function formatDateTimeDisplay(dateTime) {
+        var parts = dateTime.split("T");
+        if (parts.length < 2) return dateTime;
+        var datePart = parts[0],
+          timePart = parts[1];
+        var dparts = datePart.split("-");
+        var year = dparts[0],
+          month = dparts[1],
+          day = dparts[2];
+        var tparts = timePart.split(":");
+        var hour = tparts[0],
+          min = tparts[1];
+        return day + ":" + month + ":" + year + " " + hour + ":" + min;
+      }
+
+      function formatEditedDateDisplay(dateObj) {
+        var hh = String(dateObj.getHours()).padStart(2, "0");
+        var mm = String(dateObj.getMinutes()).padStart(2, "0");
+        var dd = String(dateObj.getDate()).padStart(2, "0");
+        var MM = String(dateObj.getMonth() + 1).padStart(2, "0");
+        var yyyy = dateObj.getFullYear();
+        return hh + ":" + mm + " " + dd + "-" + MM + "-" + yyyy;
+      }
+
+      function addToDo() {
+        var description = document
+          .getElementById("todoDescription")
+          .value.trim();
+        var dateTime = document.getElementById("targetDateTime").value;
+        var addedDate = document.getElementById("todayDate").value;
+
+        if (!description || !dateTime) {
+          alert("Please enter all required fields.");
+          return;
+        }
+
+        var nowISO = new Date().toISOString().slice(0, 16);
+        if (dateTime < nowISO) {
+          alert("You cannot select a past date and time!");
+          return;
+        }
+
+        var newId = getNextToDoID();
+
+        var todo = {
+          id: newId,
+          description: description,
+          addedDate: addedDate,
+          editedDate: null,
+          targetDateTime: dateTime,
+          status: "Pending",
+        };
+
+        todos.push(todo);
+        renderTable();
+        resetForm();
+      }
+
+      function renderTable() {
+        var tbody = document
+          .getElementById("todoTable")
+          .getElementsByTagName("tbody")[0];
+        tbody.innerHTML = "";
+
+        todos.forEach(function (todo) {
+          var row = tbody.insertRow();
+
+          // ID
+          var cellId = row.insertCell(0);
+          cellId.innerText = todo.id;
+
+          // Description + dates
+          var cellDesc = row.insertCell(1);
+          var addedText = "(Added on " + todo.addedDate + ")";
+          if (todo.editedDate) {
+            addedText +=
+              ", (Edited on " +
+              formatEditedDateDisplay(new Date(todo.editedDate)) +
+              ")";
+          }
+
+          cellDesc.innerHTML =
+            todo.description +
+            "<br><small style='color:gray;'>" +
+            addedText +
+            "</small>";
+
+          // Target Date & Time
+          var cellTarget = row.insertCell(2);
+          cellTarget.innerText = formatDateTimeDisplay(todo.targetDateTime);
+
+          // Status column
+          var cellStatus = row.insertCell(3);
+          cellStatus.innerText = todo.status.toLowerCase();
+          cellStatus.style.textTransform = "capitalize";
+          cellStatus.style.textAlign = "center";
+
+          // Status Action Button
+          var cellAction = row.insertCell(4);
+          var actionBtn = document.createElement("button");
+          actionBtn.innerText =
+            todo.status === "Pending"
+              ? "In Progress"
+              : todo.status === "In progress"
+              ? "Completed"
+              : "";
+          actionBtn.style.cursor = "pointer";
+
+          if (todo.status === "completed") {
+            actionBtn.disabled = true;
+            actionBtn.style.display = "none";
+          }
+
+          actionBtn.addEventListener("click", function () {
+            if (todo.status === "Pending") {
+              todo.status = "In progress";
+              cellStatus.innerText = "In progress";
+              actionBtn.innerText = "Completed";
+            } else if (todo.status === "In progress") {
+              todo.status = "completed";
+              cellStatus.innerText = "completed";
+              actionBtn.disabled = true;
+              actionBtn.style.display = "none";
+              cellEdit.innerHTML = ""; // Remove edit button
+            }
+          });
+
+          cellAction.appendChild(actionBtn);
+
+          // Edit Button
+          var cellEdit = row.insertCell(5);
+          if (todo.status !== "completed") {
+            var editBtn = document.createElement("button");
+            editBtn.innerText = "Edit";
+            editBtn.style.cursor = "pointer";
+            editBtn.onclick = function () {
+              enterEditMode(todo.id);
+            };
+            cellEdit.appendChild(editBtn);
+          }
+        });
+      }
+
+      function enterEditMode(id) {
+        var todo = todos.find((t) => t.id === id);
+        if (!todo) return;
+
+        editingTodoId = id;
+        document.getElementById("todoDescription").value = todo.description;
+        document.getElementById("targetDateTime").value = todo.targetDateTime;
+        document.getElementById("todayDate").value = todo.addedDate;
+        document.getElementById("status").value = todo.status;
+
+        document.getElementById("addButton").style.display = "none";
+        document.getElementById("updateButton").style.display = "inline";
+        document.getElementById("cancelButton").style.display = "inline";
+      }
+
+      function cancelEdit() {
+        editingTodoId = null;
+        resetForm();
+        document.getElementById("addButton").style.display = "inline";
+        document.getElementById("updateButton").style.display = "none";
+        document.getElementById("cancelButton").style.display = "none";
+      }
+
+      function updateToDo() {
+        if (editingTodoId === null) return;
+
+        var description = document
+          .getElementById("todoDescription")
+          .value.trim();
+        var dateTime = document.getElementById("targetDateTime").value;
+        var status = document.getElementById("status").value;
+        var addedDate = document.getElementById("todayDate").value;
+
+        if (!description || !dateTime) {
+          alert("Please enter all required fields.");
+          return;
+        }
+
+        var nowISO = new Date().toISOString().slice(0, 16);
+        if (dateTime < nowISO) {
+          alert("You cannot select a past date and time!");
+          return;
+        }
+
+        var todo = todos.find((t) => t.id === editingTodoId);
+        if (!todo) return;
+
+        todo.description = description;
+        todo.targetDateTime = dateTime;
+        todo.status = status;
+        todo.editedDate = new Date().toISOString();
+
+        renderTable();
+        cancelEdit();
+      }
+
+      function resetForm() {
+        document.getElementById("todoForm").reset();
+        initializeForm();
+      }
+      function globalSearch() {
+        const keywordInput = document
+          .getElementById("globalSearchKeyword")
+          .value.toLowerCase()
+          .trim();
+        const startDateInput = document.getElementById("globalStartDate").value;
+        const endDateInput = document.getElementById("globalEndDate").value;
+
+        const tbody = document
+          .getElementById("todoTable")
+          .getElementsByTagName("tbody")[0];
+        const rows = tbody.getElementsByTagName("tr");
+
+        for (let row of rows) {
+          const cells = row.getElementsByTagName("td");
+          const idText = cells[0].innerText.toLowerCase();
+          const descText = cells[1].innerText.toLowerCase();
+          const statusText = cells[3].innerText.toLowerCase();
+
+          // Get the todo item to access its original targetDateTime
+          const todoId = parseInt(cells[0].innerText);
+          const todo = todos.find((t) => t.id === todoId);
+          const todoDateTime = todo ? todo.targetDateTime : "";
+
+          // Keyword matching - search across all text fields
+          let matchKeyword = true;
+          if (keywordInput) {
+            matchKeyword =
+              idText.includes(keywordInput) ||
+              descText.includes(keywordInput) ||
+              statusText.includes(keywordInput);
+          }
+
+          // Date range matching logic (same as before)
+          let matchDateTime = true;
+          if (startDateInput || endDateInput) {
+            const todoDate = new Date(todoDateTime);
+            const startDate = startDateInput ? new Date(startDateInput) : null;
+            const endDate = endDateInput ? new Date(endDateInput) : null;
+
+            if (startDate && endDate) {
+              // Case 1: Both start and end dates defined
+              matchDateTime = todoDate >= startDate && todoDate <= endDate;
+            } else if (startDate) {
+              // Case 2: Only start date defined
+              matchDateTime = todoDate >= startDate;
+            } else if (endDate) {
+              // Case 3: Only end date defined
+              matchDateTime = todoDate <= endDate;
+            }
+          }
+
+          // Show row only if both keyword and date conditions are met
+          row.style.display = matchKeyword && matchDateTime ? "" : "none";
+        }
+      }
+
+      function resetGlobalFilters() {
+        document.getElementById("globalSearchKeyword").value = "";
+        document.getElementById("globalStartDate").value = "";
+        document.getElementById("globalEndDate").value = "";
+        globalSearch();
+      }
+    </script>
+  </body>
 </html>
