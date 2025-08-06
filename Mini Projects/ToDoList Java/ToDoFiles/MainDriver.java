@@ -1,91 +1,105 @@
 package com.aditya.todo;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
+import java.util.*;
+import java.text.SimpleDateFormat;
 
 public class MainDriver {
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static Scanner scanner = new Scanner(System.in);
+    private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public static void main(String[] args) {
         SearchManager manager = new SearchManager();
         boolean running = true;
 
+        System.out.println("Current Date & Time: " + dateTimeFormatter.format(new Date()));
+
         while (running) {
-            System.out.println("\n===== To-Do List Java Application =====");
-            System.out.println("Current Date & Time: " + LocalDateTime.now().format(formatter));
-            System.out.println("1. Show All Tasks");
-            System.out.println("2. Add Task");
-            System.out.println("3. Edit Task");
-            System.out.println("4. Update Task Status");
-            System.out.println("5. Search Tasks");
+            System.out.println("\nTo-Do List Menu:");
+            System.out.println("1. Add Task");
+            System.out.println("2. Edit Task");
+            System.out.println("3. Update Status");
+            System.out.println("4. View All Tasks");
+            System.out.println("5. Search Task");
             System.out.println("6. Exit");
-            System.out.print("Choose an option: ");
+            System.out.print("Enter choice: ");
+            int choice = Integer.parseInt(scanner.nextLine());
 
-            int option = scanner.nextInt();
-            scanner.nextLine();
+            try {
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter description: ");
+                        String desc = scanner.nextLine();
+                        System.out.print("Enter added date (yyyy-MM-dd): ");
+                        Date addedDate = dateFormatter.parse(scanner.nextLine());
+                        System.out.print("Enter target date and time (yyyy-MM-ddTHH:mm): ");
+                        Date targetDateTime = dateTimeFormatter.parse(scanner.nextLine());
+                        manager.addTask(desc, addedDate, targetDateTime);
+                        break;
 
-            switch (option) {
-                case 1 -> manager.printAllTasks();
-                case 2 -> {
-                    System.out.print("Enter task description: ");
-                    String desc = scanner.nextLine();
-                    System.out.print("Enter target date & time (yyyy-MM-dd HH:mm:ss): ");
-                    LocalDateTime target = LocalDateTime.parse(scanner.nextLine(), formatter);
-                    manager.addTask(desc, target);
-                }
-                case 3 -> {
-                    System.out.print("Enter task ID to edit: ");
-                    int id = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("Enter new description (leave blank to keep same): ");
-                    String newDesc = scanner.nextLine();
-                    System.out.print("Enter new target date & time (leave blank to keep same): ");
-                    String dateInput = scanner.nextLine();
-                    LocalDateTime newDate = dateInput.isEmpty() ? null : LocalDateTime.parse(dateInput, formatter);
-                    manager.editTask(id, newDesc, newDate);
-                }
-                case 4 -> {
-                    System.out.print("Enter task ID: ");
-                    int id = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("Enter status (Pending/In Progress/Completed): ");
-                    String status = scanner.nextLine();
-                    manager.updateStatus(id, status);
-                }
-                case 5 -> {
-                    System.out.println("Search by: 1) ID  2) Keyword  3) Date Range  4) Status");
-                    int searchOpt = scanner.nextInt();
-                    scanner.nextLine();
-                    switch (searchOpt) {
-                        case 1 -> {
-                            System.out.print("Enter task ID: ");
-                            manager.searchById(scanner.nextInt());
-                        }
-                        case 2 -> {
+                    case 2:
+                        System.out.print("Enter task ID: ");
+                        int editId = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Enter new description: ");
+                        String newDesc = scanner.nextLine();
+                        System.out.print("Enter new target date and time (yyyy-MM-ddTHH:mm): ");
+                        Date newTarget = dateTimeFormatter.parse(scanner.nextLine());
+                        manager.editTask(editId, newDesc, newTarget);
+                        break;
+
+                    case 3:
+                        System.out.print("Enter task ID: ");
+                        int statusId = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Enter new status: ");
+                        String newStatus = scanner.nextLine();
+                        manager.updateStatus(statusId, newStatus);
+                        break;
+
+                    case 4:
+                        manager.printAllTasks();
+                        break;
+
+                    case 5:
+                        System.out.println("Search by: 1-ID, 2-Keyword, 3-Date Range, 4-Status");
+                        int searchType = Integer.parseInt(scanner.nextLine());
+                        List<Todo> results = null;
+
+                        if (searchType == 1) {
+                            System.out.print("Enter ID: ");
+                            results = manager.searchById(Integer.parseInt(scanner.nextLine()));
+                        } else if (searchType == 2) {
                             System.out.print("Enter keyword: ");
-                            manager.searchByKeyword(scanner.nextLine());
-                        }
-                        case 3 -> {
-                            System.out.print("Enter start date & time: ");
-                            LocalDateTime start = LocalDateTime.parse(scanner.nextLine(), formatter);
-                            System.out.print("Enter end date & time: ");
-                            LocalDateTime end = LocalDateTime.parse(scanner.nextLine(), formatter);
-                            manager.searchByDateRange(start, end);
-                        }
-                        case 4 -> {
+                            results = manager.searchByKeyword(scanner.nextLine());
+                        } else if (searchType == 3) {
+                            System.out.print("Enter start date-time (yyyy-MM-ddTHH:mm): ");
+                            Date start = dateTimeFormatter.parse(scanner.nextLine());
+                            System.out.print("Enter end date-time (yyyy-MM-ddTHH:mm): ");
+                            Date end = dateTimeFormatter.parse(scanner.nextLine());
+                            results = manager.searchByDateRange(start, end);
+                        } else if (searchType == 4) {
                             System.out.print("Enter status: ");
-                            manager.searchByStatus(scanner.nextLine());
+                            results = manager.searchByStatus(scanner.nextLine());
                         }
-                        default -> System.out.println("Invalid search option.");
-                    }
+
+                        if (results != null && !results.isEmpty()) {
+                            for (Todo t : results) {
+                                System.out.println("ID: " + t.id + " | " + t.description);
+                            }
+                        } else {
+                            System.out.println("No matching tasks found.");
+                        }
+                        break;
+
+                    case 6:
+                        running = false;
+                        System.out.println("Exiting application...");
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice.");
                 }
-                case 6 -> {
-                    running = false;
-                    System.out.println("Exiting application...");
-                }
-                default -> System.out.println("Invalid option.");
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please follow the correct format.");
             }
         }
     }
