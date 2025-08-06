@@ -1,10 +1,11 @@
 package com.aditya.todo;
 
-import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 public interface Searchable {
-    void searchById(int id);
-    void searchByKeyword(String keyword);
-    void searchByDateRange(LocalDateTime start, LocalDateTime end);
-    void searchByStatus(String status);
+    List<Todo> searchById(int id);
+    List<Todo> searchByKeyword(String keyword);
+    List<Todo> searchByDateRange(Date start, Date end);
+    List<Todo> searchByStatus(String status);
 }
