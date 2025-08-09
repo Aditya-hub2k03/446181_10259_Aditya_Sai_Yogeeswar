@@ -1,16 +1,44 @@
-<i><b><h>10259 - TMF JAVA FULL STACK</h></b></i>
+# 10259 – TMF Java Full Stack  
+*Maintained and operated by Aditya Sai Yogeeswar Pyda (ID: 446181)*
 
-<h>Maintained and Operated by Aditya Sai Yogeeswar Pyda-446181</h><br>
-<h>Git Pages Link: https://aditya-hub2k03.github.io/446181_10259_Aditya_Sai_Yogeeswar/ "add the branch directory"</h>
-<p>Documents Link: 
-  <ol>
-    <li>446181_Aditya_Sai_Yogeeswar JavaScript Class document: https://docs.google.com/document/d/1Zys8vcI9ik7pRvcIwKheSLy09oSJJaFKBtlgHK_QES8/edit?usp=sharing</li>
-    <li>446181_Aditya_Sai_Yogeeswar Java Document: https://docs.google.com/document/d/1Wjs7jKiIByaDrvjJHe3C3Y1XYuSsSEC5Z7W_93CEcEY/edit?usp=sharing</li>
-  </ol>
-</p>
+[![JavaScript](https://img.shields.io/badge/Language-JavaScript-yellow)](https://developer.mozilla.org/docs/Web/JavaScript)  
+[![Java](https://img.shields.io/badge/Language-Java-orange)](https://www.oracle.com/java/)  
+[![HTML](https://img.shields.io/badge/Language-HTML5-red)](https://developer.mozilla.org/docs/Web/HTML)
 
-<p>Contact Details: 
-  <br>Email: yogeeswarp@gmail.com</br>
-  Mobile No.: 9000850696
-  </p>
- 
+---
+
+## ​ Table of Contents
+
+- [About](#about)  
+- [Live Demo / GitHub Pages](#live-demo--github-pages)  
+- [Project Documents](#project-documents)  
+- [Contact Details](#contact-details)  
+
+---
+
+## ​ About  
+This repository showcases work under the **TMF Java Full Stack** program, authored by **Aditya Sai Yogeeswar Pyda (ID: 446181)**. It contains a variety of classwork, mini-projects, and structured examples. Repository branches are organized by directories for easy navigation.
+
+---
+
+## ​ Live Demo / GitHub Pages  
+A GitHub Pages version of the project is available at:  
+**https://aditya-hub2k03.github.io/446181_10259_Aditya_Sai_Yogeeswar/ "Direcotry of the required page to be mentioned here"**
+
+---
+
+## ​ Project Documents  
+Access detailed documentation via Google Docs here:  
+1. [JavaScript Class Document](https://docs.google.com/document/d/1Zys8vcI9ik7pRvcIwKheSLy09oSJJaFKBtlgHK_QES8/edit?usp=sharing)  
+2. [Java Document](https://docs.google.com/document/d/1Wjs7jKiIByaDrvjJHe3C3Y1XYuSsSEC5Z7W_93CEcEY/edit?usp=sharing)
+
+---
+
+##  Contact Details  
+- **Email**: yogeeswarp@gmail.com  
+- **Mobile**: 9000850696
+- **Batch ID**: 10259
+- **Regd. ID**: 446181
+
+
+
