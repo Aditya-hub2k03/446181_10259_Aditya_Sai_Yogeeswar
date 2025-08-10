@@ -23,7 +23,7 @@ This repository showcases work under the **TMF Java Full Stack** program, author
 
 ## ​ Live Demo / GitHub Pages  
 A GitHub Pages version of the project is available at:  
-**https://aditya-hub2k03.github.io/446181_10259_Aditya_Sai_Yogeeswar/ "Direcotry of the required page to be mentioned here"**
+**https://aditya-hub2k03.github.io/446181_10259_Aditya_Sai_Yogeeswar/ "Directory of the required page to be mentioned here"**
 
 ---
 
