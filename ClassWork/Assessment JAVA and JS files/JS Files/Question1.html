@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question-1</title>
+</head>
+<body>
+    <h1>Question 1 JS</h1>
+    <p>Write a JavaScript program to list the properties of a JavaScript object.<br> 
+Sample object: <br>
+var student = { <br>
+name : "David Rayy", <br>
+sclass : "VI", <br>
+rollno : 12 }; <br>
+Sample Output: name,sclass,rollno<br> </p>
+</body>
+<script>
+    var student = { 
+    name: "David Rayy", 
+    sclass: "VI", 
+    rollno: 12
+};
+var properties = Object.keys(student);
+var output = properties.join(",");
+console.log(output);
+</script>
+</html>
