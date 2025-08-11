@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question-5</title>
+</head>
+<head>
+    <title>Search Object by ID</title>
+</head>
+<body>
+    <h2>Search Object by ID</h2>
+    
+    <input type="number" id="searchId" placeholder="Enter ID">
+    <button onclick="searchObject()">Search</button>
+    
+    <div id="result" style="margin-top: 10px; font-weight: bold; color:yellow; background-color: blue;"></div>
+    
+    <script>
+        let students = [
+            { id: 1, name: "Aditya", grade: "A" },
+            { id: 2, name: "Sai", grade: "B" },
+            { id: 3, name: "Yogeeswar", grade: "C" }
+        ];
+
+        function searchObject() {
+            let id = parseInt(document.getElementById("searchId").value);
+            let resultDiv = document.getElementById("result");
+
+            let found = students.find(function(student) {
+                return student.id === id;
+            });
+
+            if (found) {
+                resultDiv.textContent = "ID: " + found.id + ", Name: " + found.name + ", Grade: " + found.grade;
+            } else {
+                resultDiv.textContent = "No student found with ID " + id;
+            }
+        }
+    </script>
+</body>
+</html>
