@@ -7,20 +7,21 @@ Objectives:
 
 Using Core Java OOPS
 
-Project Description
-This system simulates a real time reservation system where:
-Abstract Class(User)
-Inheritance (Admin extends User)
-Encapsulation (Passenger, Flight, Booking)
-Dynamic data using ArrayList
-Real-Time input using Scanner
-Search and Filtering using String Logic
+<p>Project Description<br>
+This system simulates a real time reservation system where:<br>
+Abstract Class(User)<br>
+Inheritance (Admin extends User)<br>
+Encapsulation (Passenger, Flight, Booking)<br>
+Dynamic data using ArrayList<br>
+Real-Time input using Scanner<br>
+Search and Filtering using String Logic<br>
+</p>
 
 Modular Breakdown
 
-Passenger
-Flight
-Booking
-User
-Admin
-FlightBookingApp
+Passenger<br>
+Flight<br>
+Booking<br>
+User<br>
+Admin<br>
+FlightBookingApp<br>
