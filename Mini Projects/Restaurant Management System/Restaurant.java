@@ -7,7 +7,7 @@ public class Restaurant {
     private HashMap<Integer, FoodItem> menu = new HashMap<>();
     private HashMap<Integer, Integer> cart = new HashMap<>();
     private int nextId = 1;
-    private Scanner sc = new Scanner(System.in);
+    private Scanner sc = new Scanner(System.in); 
 
     public Restaurant() {
         // Default menu items
