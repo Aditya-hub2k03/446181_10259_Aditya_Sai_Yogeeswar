@@ -1,5 +1,5 @@
 package com.yogesh.rmsv2;
-
+ 
 import java.io.Serializable;
 
 public class FoodItem implements Serializable {
