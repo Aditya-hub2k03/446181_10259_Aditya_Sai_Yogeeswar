@@ -11,7 +11,7 @@ public class Passenger {
 		this.contact = contact;
 	}
 
-	public int getId() {
+	public int getId() { 
 		return id;
 	}
 
