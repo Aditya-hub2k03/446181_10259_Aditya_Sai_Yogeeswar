@@ -8,7 +8,7 @@ public class Booking {
 	public Booking(Passenger passenger, Flight flight, String date){
 		this.passenger = passenger;
 		this.flight = flight;
-		this.date = date;
+		this.date = date; 
 		
 	}
 	public void display() {
