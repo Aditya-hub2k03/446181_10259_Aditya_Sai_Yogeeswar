@@ -1,10 +1,8 @@
-package com.yogesh.rmsv1;
-
 import java.util.*;
 
 public class Customer {
     private static final Scanner sc = new Scanner(System.in);
-    private static final List<MenuItem> cart = new ArrayList<>();
+    private static final HashMap<Integer, Integer> cart = new HashMap<>();
     private static double discount = 0.0;
 
     public static void customerMenu() {
@@ -46,8 +44,11 @@ public class Customer {
             int id = sc.nextInt();
 
             if (Menu.containsItem(id)) {
-                cart.add(Menu.getItem(id));
-                System.out.println("Item added to cart: " + Menu.getItem(id).name);
+                System.out.print("Enter quantity: ");
+                int qty = sc.nextInt();
+
+                cart.put(id, cart.getOrDefault(id, 0) + qty);
+                System.out.println(qty + " x " + Menu.getItem(id).name + " added to cart.");
             } else {
                 System.out.println("Invalid Item ID!");
             }
@@ -66,9 +67,14 @@ public class Customer {
 
         double total = 0;
         System.out.println("\n====== Your Order ======");
-        for (MenuItem item : cart) {
-            System.out.println(item.name + " - Rs." + item.price);
-            total += item.price;
+        for (Map.Entry<Integer, Integer> entry : cart.entrySet()) {
+            int id = entry.getKey();
+            int qty = entry.getValue();
+            MenuItem item = Menu.getItem(id);
+
+            double cost = item.price * qty;
+            System.out.println(item.name + " x " + qty + " = Rs." + cost);
+            total += cost;
         }
 
         if (discount > 0) {
