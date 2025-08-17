@@ -1,141 +1,128 @@
+package com.yogesh.rmsv1;
+import java.io.*;
 import java.util.*;
 
 public class Customer {
-    private static final Scanner sc = new Scanner(System.in);
-    private static final HashMap<Integer, Integer> cart = new HashMap<>();
-    private static double discount = 0.0;
+    private Menu menu;
+    private static int billCounter = 1;
+    private HashMap<Integer, Integer> order; // ItemID -> Quantity
+    private HashMap<String, Integer> coupons;
 
-    public static void customerMenu() {
-        while (true) {
-            System.out.println("\n====== Customer Menu ======");
+    public Customer(Menu menu) {
+        this.menu = menu;
+        order = new HashMap<>();
+        coupons = new HashMap<>();
+        coupons.put("DISC10", 10);
+        coupons.put("DISC20", 20);
+    }
+
+    public void customerMenu(Scanner sc) {
+        int choice;
+        do {
+            System.out.println("\n--- Customer Menu ---");
             System.out.println("1. Show Menu");
             System.out.println("2. Place Order");
-            System.out.println("3. Remove Item from Cart");
-            System.out.println("4. Pay Bill");
-            System.out.println("5. Add Coupon Code");
-            System.out.println("6. Exit");
-            System.out.print("Enter choice: ");
-            int choice = sc.nextInt();
+            System.out.println("3. Pay Bill");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            choice = Integer.parseInt(sc.nextLine());
 
             switch (choice) {
                 case 1:
-                    Menu.showMenu();
+                    menu.displayMenu();
                     break;
                 case 2:
-                    placeOrder();
+                    placeOrder(sc);
                     break;
                 case 3:
-                    removeItem();
+                    payBill(sc);
                     break;
                 case 4:
-                    payBill();
+                    System.out.println("Exiting Customer...");
                     break;
-                case 5:
-                    addCoupon();
-                    break;
-                case 6:
-                    return;
                 default:
                     System.out.println("Invalid choice!");
             }
-        }
+        } while (choice != 4);
     }
 
-    private static void placeOrder() {
+    private void placeOrder(Scanner sc) {
         while (true) {
-            Menu.showMenu();
+            menu.displayMenu();
             System.out.print("Enter Item ID to order: ");
-            int id = sc.nextInt();
-
-            if (Menu.containsItem(id)) {
-                System.out.print("Enter quantity: ");
-                int qty = sc.nextInt();
-
-                cart.put(id, cart.getOrDefault(id, 0) + qty);
-                System.out.println(qty + " x " + Menu.getItem(id).name + " added to cart.");
+            int id = Integer.parseInt(sc.nextLine());
+            if (menu.containsItem(id)) {
+                System.out.print("Enter Quantity: ");
+                int qty = Integer.parseInt(sc.nextLine());
+                order.put(id, order.getOrDefault(id, 0) + qty);
             } else {
                 System.out.println("Invalid Item ID!");
             }
-
-            System.out.print("Add more items? (yes/no): ");
-            String more = sc.next();
-            if (more.equalsIgnoreCase("no")) break;
+            System.out.print("Do you want to add more items? (yes/no): ");
+            String more = sc.nextLine();
+            if (!more.equalsIgnoreCase("yes")) break;
         }
     }
 
-    private static void removeItem() {
-        if (cart.isEmpty()) {
-            System.out.println("Your cart is empty!");
-            return;
-        }
-
-        System.out.println("\n====== Your Cart ======");
-        for (Map.Entry<Integer, Integer> entry : cart.entrySet()) {
-            MenuItem item = Menu.getItem(entry.getKey());
-            System.out.println(item.id + " - " + item.name + " x " + entry.getValue());
-        }
-
-        System.out.print("Enter Item ID to remove: ");
-        int id = sc.nextInt();
-
-        if (cart.containsKey(id)) {
-            System.out.print("Enter quantity to remove: ");
-            int qty = sc.nextInt();
-
-            int currentQty = cart.get(id);
-            if (qty >= currentQty) {
-                cart.remove(id);
-                System.out.println("Removed " + Menu.getItem(id).name + " from cart.");
-            } else {
-                cart.put(id, currentQty - qty);
-                System.out.println("Removed " + qty + " x " + Menu.getItem(id).name + " from cart.");
-            }
-        } else {
-            System.out.println("Item not found in cart!");
-        }
-    }
-
-    private static void payBill() {
-        if (cart.isEmpty()) {
-            System.out.println("No items in cart!");
+    private void payBill(Scanner sc) {
+        if (order.isEmpty()) {
+            System.out.println("No items in the order!");
             return;
         }
 
         double total = 0;
-        System.out.println("\n====== Your Order ======");
-        for (Map.Entry<Integer, Integer> entry : cart.entrySet()) {
+        System.out.println("\n--- Bill ---");
+        for (Map.Entry<Integer, Integer> entry : order.entrySet()) {
             int id = entry.getKey();
             int qty = entry.getValue();
-            MenuItem item = Menu.getItem(id);
-
-            double cost = item.price * qty;
-            System.out.println(item.name + " x " + qty + " = Rs." + cost);
+            String[] item = menu.getItem(id);
+            double price = Double.parseDouble(item[1]);
+            double cost = qty * price;
             total += cost;
+            System.out.printf("%s x%d = %.2f\n", item[0], qty, cost);
+        }
+        System.out.println("Total: " + total);
+
+        System.out.print("Do you want to apply a coupon? (yes/no): ");
+        String apply = sc.nextLine();
+        if (apply.equalsIgnoreCase("yes")) {
+            System.out.print("Enter Coupon Code: ");
+            String code = sc.nextLine();
+            if (coupons.containsKey(code)) {
+                int discount = coupons.get(code);
+                total = total - (total * discount / 100.0);
+                System.out.println("Coupon applied! Discount: " + discount + "%");
+            } else {
+                System.out.println("Invalid coupon!");
+            }
         }
 
-        if (discount > 0) {
-            System.out.println("Discount Applied: " + (discount * 100) + "%");
-            total = total - (total * discount);
-        }
-
-        System.out.println("Total Bill: Rs." + total);
-        System.out.println("Payment Successful! Thank you.");
-        cart.clear();
-        discount = 0.0;
+        System.out.println("Final Amount to Pay: " + total);
+        saveBillToFile(total);
+        order.clear();
     }
 
-    private static void addCoupon() {
-        System.out.print("Enter Coupon Code: ");
-        String code = sc.next();
+    private void saveBillToFile(double total) {
+        try {
+            File folder = new File("bills");
+            if (!folder.exists()) folder.mkdir();
 
-        if (code.equalsIgnoreCase("DISC10")) {
-            discount = 0.10;
-            System.out.println("10% Discount Applied!");
-        } else if (code.equalsIgnoreCase("DISC20")) {
-            discount = 0.20;
-            System.out.println("20% Discount Applied!");
-        } else {
-            System.out.println("Invalid Coupon Code!");
+            FileWriter writer = new FileWriter("bills/bill" + billCounter + ".txt");
+            writer.write("----- Bill " + billCounter + " -----\n");
+            for (Map.Entry<Integer, Integer> entry : order.entrySet()) {
+                int id = entry.getKey();
+                int qty = entry.getValue();
+                String[] item = menu.getItem(id);
+                double price = Double.parseDouble(item[1]);
+                double cost = qty * price;
+                writer.write(item[0] + " x" + qty + " = " + cost + "\n");
+            }
+            writer.write("Total = " + total + "\n");
+            writer.close();
+            System.out.println("Bill saved as bills/bill" + billCounter + ".txt");
+            billCounter++;
+        } catch (IOException e) {
+            System.out.println("Error saving bill: " + e.getMessage());
         }
     }
 }
