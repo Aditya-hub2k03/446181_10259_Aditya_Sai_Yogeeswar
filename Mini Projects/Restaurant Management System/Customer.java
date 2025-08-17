@@ -10,9 +10,10 @@ public class Customer {
             System.out.println("\n====== Customer Menu ======");
             System.out.println("1. Show Menu");
             System.out.println("2. Place Order");
-            System.out.println("3. Pay Bill");
-            System.out.println("4. Add Coupon Code");
-            System.out.println("5. Exit");
+            System.out.println("3. Remove Item from Cart");
+            System.out.println("4. Pay Bill");
+            System.out.println("5. Add Coupon Code");
+            System.out.println("6. Exit");
             System.out.print("Enter choice: ");
             int choice = sc.nextInt();
 
@@ -24,12 +25,15 @@ public class Customer {
                     placeOrder();
                     break;
                 case 3:
-                    payBill();
+                    removeItem();
                     break;
                 case 4:
-                    addCoupon();
+                    payBill();
                     break;
                 case 5:
+                    addCoupon();
+                    break;
+                case 6:
                     return;
                 default:
                     System.out.println("Invalid choice!");
@@ -56,6 +60,38 @@ public class Customer {
             System.out.print("Add more items? (yes/no): ");
             String more = sc.next();
             if (more.equalsIgnoreCase("no")) break;
+        }
+    }
+
+    private static void removeItem() {
+        if (cart.isEmpty()) {
+            System.out.println("Your cart is empty!");
+            return;
+        }
+
+        System.out.println("\n====== Your Cart ======");
+        for (Map.Entry<Integer, Integer> entry : cart.entrySet()) {
+            MenuItem item = Menu.getItem(entry.getKey());
+            System.out.println(item.id + " - " + item.name + " x " + entry.getValue());
+        }
+
+        System.out.print("Enter Item ID to remove: ");
+        int id = sc.nextInt();
+
+        if (cart.containsKey(id)) {
+            System.out.print("Enter quantity to remove: ");
+            int qty = sc.nextInt();
+
+            int currentQty = cart.get(id);
+            if (qty >= currentQty) {
+                cart.remove(id);
+                System.out.println("Removed " + Menu.getItem(id).name + " from cart.");
+            } else {
+                cart.put(id, currentQty - qty);
+                System.out.println("Removed " + qty + " x " + Menu.getItem(id).name + " from cart.");
+            }
+        } else {
+            System.out.println("Item not found in cart!");
         }
     }
 
