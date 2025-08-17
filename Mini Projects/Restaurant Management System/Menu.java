@@ -1,64 +1,104 @@
 package com.yogesh.rmsv1;
-
 import java.io.*;
 import java.util.*;
 
 public class Menu {
-    private static final HashMap<Integer, MenuItem> menu = new HashMap<>();
+    private TreeMap<Integer, String[]> items; // Key: ItemID, Value: [ItemName, Price]
+    private String menuFilePath = "D:/menu.txt";
 
-    public static void addItem(int id, String name, double price) {
-        menu.put(id, new MenuItem(id, name, price));
+    public Menu() {
+        items = new TreeMap<>();
+        preloadMenu();
     }
 
-    public static void updateItem(int id, String name, double price) {
-        if (menu.containsKey(id)) {
-            menu.put(id, new MenuItem(id, name, price));
+    private void preloadMenu() {
+        File file = new File(menuFilePath);
+        if (file.exists()) {
+            loadMenuFromFile(menuFilePath);
+        } else {
+            System.out.println("No default menu.txt found. You can load one via Admin.");
+        }
+    }
+
+    public void loadMenuFromFile(String path) {
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    int id = Integer.parseInt(parts[0].trim());
+                    String name = parts[1].trim();
+                    String price = parts[2].trim();
+
+                    // Only add if not already present
+                    if (!items.containsKey(id)) {
+                        items.put(id, new String[]{name, price});
+                    }
+                }
+            }
+            System.out.println("Menu loaded and merged successfully from " + path);
+        } catch (IOException e) {
+            System.out.println("Error loading menu file: " + e.getMessage());
+        }
+    }
+
+    public void saveMenuToFile() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(menuFilePath))) {
+            for (Map.Entry<Integer, String[]> entry : items.entrySet()) {
+                bw.write(entry.getKey() + "," + entry.getValue()[0] + "," + entry.getValue()[1]);
+                bw.newLine();
+            }
+            System.out.println("Menu saved back to " + menuFilePath);
+        } catch (IOException e) {
+            System.out.println("Error saving menu file: " + e.getMessage());
+        }
+    }
+
+    public void displayMenu() {
+        System.out.println("###############################################################");
+        System.out.println("# ItemID # Name of the Item              # Item Price         #");
+        System.out.println("###############################################################");
+        for (Map.Entry<Integer, String[]> entry : items.entrySet()) {
+            System.out.printf("# %-6d # %-28s # %-18s #\n",
+                    entry.getKey(),
+                    entry.getValue()[0],
+                    entry.getValue()[1]);
+        }
+        System.out.println("###############################################################");
+    }
+
+    public void addItem(int id, String name, String price) {
+        items.put(id, new String[]{name, price});
+        System.out.println("Item added successfully!");
+    }
+
+    public void updateItem(int id, String newName, String newPrice) {
+        if (items.containsKey(id)) {
+            items.put(id, new String[]{newName, newPrice});
             System.out.println("Item updated successfully!");
         } else {
             System.out.println("Item not found!");
         }
     }
 
-    public static void deleteItem(int id) {
-        if (menu.remove(id) != null) {
+    public void deleteItem(int id) {
+        if (items.containsKey(id)) {
+            items.remove(id);
             System.out.println("Item deleted successfully!");
         } else {
             System.out.println("Item not found!");
         }
     }
 
-    public static void loadMenuFromFile(String path) {
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            menu.clear();
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
-                int id = Integer.parseInt(parts[0].trim());
-                String name = parts[1].trim();
-                double price = Double.parseDouble(parts[2].trim());
-                menu.put(id, new MenuItem(id, name, price));
-            }
-            System.out.println("Menu loaded successfully!");
-        } catch (Exception e) {
-            System.out.println("Error loading menu: " + e.getMessage());
-        }
+    public boolean containsItem(int id) {
+        return items.containsKey(id);
     }
 
-    public static void showMenu() {
-        System.out.println("\n###############################################################");
-        System.out.println("# ItemID #       Name of the Item        #     Item Price     #");
-        System.out.println("###############################################################");
-        for (MenuItem item : menu.values()) {
-            System.out.printf("# %-6d # %-25s # %-17.2f #\n", item.id, item.name, item.price);
-        }
-        System.out.println("###############################################################");
+    public String[] getItem(int id) {
+        return items.get(id);
     }
 
-    public static boolean containsItem(int id) {
-        return menu.containsKey(id);
-    }
-
-    public static MenuItem getItem(int id) {
-        return menu.get(id);
+    public Set<Integer> getItemIDs() {
+        return items.keySet();
     }
 }
