@@ -1,0 +1,5 @@
+1,Rice,Sri Lalitha,25Kg,1100
+2,Rice,Basmathi,23Kg,999
+3,Wheat,Aashirvaad,10Kg,520
+4,Dal,Toor,5Kg,680
+5,Oil,Sunflower,1L,150
