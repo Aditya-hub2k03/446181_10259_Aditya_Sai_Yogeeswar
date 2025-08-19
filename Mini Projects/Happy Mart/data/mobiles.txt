@@ -1,0 +1,5 @@
+1,Mobile,Apple,iPhone13,60000
+2,Mobile,Samsung,Galaxy S21,45000
+3,Mobile,OnePlus,9Pro,42000
+4,Mobile,Xiaomi,Mi11,28000
+5,Mobile,Oppo,Reno6,30000

@@ -1,0 +1,5 @@
+1,TV,Samsung,55inch,45000
+2,Fridge,LG,Double Door,38000
+3,AC,Voltas,1.5Ton,32000
+4,WashingMachine,Whirlpool,7Kg,22000
+5,Laptop,Dell,Inspiron,55000
