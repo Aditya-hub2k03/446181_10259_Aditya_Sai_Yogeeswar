@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To Do List Application</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="blurred-bg"></div>
+
+    <!-- Past Date Confirmation Modal -->
+    <div id="pastDateModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm to add a task on a past date</h3>
+            <div class="modal-buttons">
+                <button class="modal-button" id="confirmYes">Yes</button>
+                <button class="modal-button" id="confirmNo">No</button>
+            </div>
+            <div class="status-section">
+                <p><strong>Select the status of the task for the past date</strong></p>
+                <div class="status-options">
+                    <div class="status-option">
+                        <input type="checkbox" class="status-checkbox" id="pendingStatus" disabled />
+                        <label class="status-label">PENDING</label>
+                    </div>
+                    <div class="status-option">
+                        <input type="checkbox" class="status-checkbox" id="inProgressStatus" disabled />
+                        <label class="status-label">IN PROGRESS</label>
+                    </div>
+                    <div class="status-option">
+                        <input type="checkbox" class="status-checkbox" id="completedStatus" disabled />
+                        <label class="status-label">COMPLETED</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h1 style="text-align: center">Add a To Do Item</h1>
+    <form id="todoForm" onsubmit="return false;">
+        <table border="0" style="margin-left: auto; margin-right: auto">
+            <tr>
+                <td><label for="todayDate">Today's Date:</label></td>
+                <td>
+                    <input type="date" id="todayDate" name="todayDate" required readonly
+                           style="background: 0; border: 0px; color: green" />
+                </td>
+            </tr>
+            <tr>
+                <td><label for="todoDescription">To Do Description:</label></td>
+                <td>
+                    <input type="text" id="todoDescription" name="todoDescription" required />
+                </td>
+            </tr>
+            <tr>
+                <td><label for="targetDateTime">Target Date & Time:</label></td>
+                <td>
+                    <input type="text" id="targetDateTime" placeholder="Select target Date and time"
+                           name="targetDateTime" required />
+                </td>
+            </tr>
+            <tr>
+                <td><label for="status">Status:</label></td>
+                <td>
+                    <input type="text" id="status" name="status" value="Pending" disabled
+                           style="border: 0px; background-color: 0; font-size: 90%; font-weight: bold" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    <input type="button" id="addButton" value="Add To Do" onclick="addToDo()" />
+                    <input type="button" id="updateButton" value="Update" onclick="updateToDo()" style="display: none" />
+                    <input type="button" value="Cancel" id="cancelButton" onclick="cancelEdit()" style="display: none" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <br />
+
+    <!-- Global Search Bar -->
+    <div class="search-container">
+        <div style="margin-bottom: 10px">
+            <input type="text" id="globalSearchKeyword" placeholder="Search by keyword..."
+                   style="width: 300px; padding: 8px; border: 1px solid #ccc; margin-right: 10px;" />
+            <button onclick="globalSearch()" style="padding: 8px 15px; cursor: pointer">🔍</button>
+            <button onclick="resetGlobalFilters()" style="padding: 8px 15px; cursor: pointer; margin-left: 5px">Reset</button>
+        </div>
+        <div>
+            Start Date:
+            <input type="text" id="globalStartDate" placeholder="Select Start Date and time"
+                   style="width: 160px; padding: 5px; margin-right: 15px; margin-left: 5px;" />
+            End Date:
+            <input type="text" id="globalEndDate" placeholder="Select End Date and time"
+                   style="width: 160px; padding: 5px; margin-left: 5px;" />
+        </div>
+    </div>
+
+    <h2 style="text-align: center">To Do List</h2>
+    <br />
+    <table border="2" id="todoTable" style="width: 100%; border-collapse: collapse; border-color: #000000">
+        <thead>
+            <tr>
+                <th style="width: 250px">
+                    Todo ID
+                    <button class="sort-btn" onclick="sortById()">↑↓</button>
+                </th>
+                <th style="width: 370px">ToDo Description</th>
+                <th style="width: 350px">
+                    Target Date & Time
+                    <button class="sort-btn" onclick="sortByDateTime()">↑↓</button>
+                </th>
+                <th style="width: 320px">
+                    Current Status
+                    <button class="sort-btn" onclick="sortByStatus()">↑↓</button>
+                </th>
+                <th>Status Action</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="script.js"></script>
+</body>
+</html>
