@@ -2,7 +2,7 @@ package com.yogesh.flightbookingsystem;
 
 public class Flight {
 	private String flightNo;
-	private String source;
+	private String source; 
 	private String destination;
 	private double price;
 	
