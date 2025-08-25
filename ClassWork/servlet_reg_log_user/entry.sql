@@ -1,5 +1,4 @@
 CREATE DATABASE userdb;
-
 USE userdb;
 
 CREATE TABLE users (
