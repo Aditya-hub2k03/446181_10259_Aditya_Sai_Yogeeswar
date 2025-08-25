@@ -3,7 +3,8 @@
 
 [![JavaScript](https://img.shields.io/badge/Language-JavaScript-yellow)](https://developer.mozilla.org/docs/Web/JavaScript)  
 [![Java](https://img.shields.io/badge/Language-Java-orange)](https://www.oracle.com/java/)  
-[![HTML](https://img.shields.io/badge/Language-HTML5-red)](https://developer.mozilla.org/docs/Web/HTML)
+[![HTML](https://img.shields.io/badge/Language-HTML5-red)](https://developer.mozilla.org/docs/Web/HTML)<br>
+[![CSS](https://img.shields.io/badge/Language-CSS5-blue)](https://developer.mozilla.org/docs/Web/CSS)
 
 ---
 
