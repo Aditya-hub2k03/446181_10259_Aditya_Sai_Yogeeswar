@@ -12,7 +12,7 @@ public class SchoolClass {
 		this.teacher=teacher;
 		this.students=new ArrayList<>();
 		
-	}
+	} 
 
 	 public String getClassName() {
 	        return className;
