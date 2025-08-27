@@ -6,7 +6,7 @@ abstract public class User {
 		this.name = name;
 		
 	}
-	
+	 
 	public abstract void showMenu();
 	
 }
