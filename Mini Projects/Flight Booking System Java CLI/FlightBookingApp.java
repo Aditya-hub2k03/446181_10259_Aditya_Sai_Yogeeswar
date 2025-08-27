@@ -8,7 +8,7 @@ import java.util.Calendar;
 
 public class FlightBookingApp {
     public static void main(String[] args) {
-        // Show today's date at the start
+        // Show today's date at the start 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String todayStr = sdf.format(new Date());
         System.out.println("======================================");
