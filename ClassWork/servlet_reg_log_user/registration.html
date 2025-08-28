@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registration</title>
+    <title>User Registration</title>
 </head>
 <body>
     <h2>User Registration</h2>
@@ -14,14 +14,23 @@
         <input type="radio" name="gender" value="Male">Male
         <input type="radio" name="gender" value="Female">Female<br><br>
 
-        Date of Birth: <input type="date" name="dob" required><br><br>
+        DOB: <input type="date" name="dob" required><br><br>
 
         Hobbies:
-        <input type="checkbox" name="hobbies" value="Sports">Sports
         <input type="checkbox" name="hobbies" value="Reading">Reading
+        <input type="checkbox" name="hobbies" value="Sports">Sports
         <input type="checkbox" name="hobbies" value="Music">Music<br><br>
+
+        Country:
+        <select name="country">
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+        </select><br><br>
 
         <input type="submit" value="Register">
     </form>
+    <br>
+    <a href="login.html">Already Registered? Login Here</a>
 </body>
 </html>
