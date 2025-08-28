@@ -4,7 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.*;
 import java.sql.*;
-//import jakarta.servlet.annotation.WebServlet;
+//import jakarta.servlet.annotation.WebServlet; 
 //@WebServlet("/register")
 public class DeleteUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
