@@ -47,18 +47,15 @@ public class StreamChunkProcessor {
 
         createOutputDirectory();
 
-        // Start reader and writer threads
         Thread readerThread = new Thread(this::readChunks);
         ExecutorService writerExecutor = Executors.newFixedThreadPool(4); // Adjust pool size as needed
 
         readerThread.start();
 
-        // Submit writer tasks
         for (int i = 0; i < 4; i++) {
             writerExecutor.submit(this::writeChunk);
         }
 
-        // Progress tracking
         new Thread(this::showProgress).start();
 
         try {
