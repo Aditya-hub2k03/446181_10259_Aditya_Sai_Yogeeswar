@@ -9,7 +9,7 @@ class Student implements Comparable<Student> {
         this.id = id;
         this.name = name;
     }
-
+  
     // Natural ordering: sort by id
     @Override
     public int compareTo(Student other) {
