@@ -26,9 +26,30 @@ public class TodoServlet extends HttpServlet {
             + "      table { margin: 20px auto; border-collapse: collapse; width: 90%; }\n"
             + "      th, td { border: 1px solid black; padding: 8px; text-align: center; }\n"
             + "      h1, h2 { text-align: center; }\n"
-            + "      .success { text-align: center; color: green; font-weight: bold; margin: 10px; }\n"
             + "      .disabled-btn { background-color: #cccccc; cursor: not-allowed; }\n"
             + "      input[type=\"submit\"] { padding: 5px 15px; }\n"
+            + "      /* Toast Notification */\n"
+            + "      #toast {\n"
+            + "        visibility: hidden;\n"
+            + "        min-width: 250px;\n"
+            + "        background-color: #333;\n"
+            + "        color: #fff;\n"
+            + "        text-align: center;\n"
+            + "        border-radius: 5px;\n"
+            + "        padding: 16px;\n"
+            + "        position: fixed;\n"
+            + "        z-index: 1;\n"
+            + "        left: 50%;\n"
+            + "        bottom: 30px;\n"
+            + "        transform: translateX(-50%);\n"
+            + "        font-size: 17px;\n"
+            + "      }\n"
+            + "      #toast.show {\n"
+            + "        visibility: visible;\n"
+            + "        animation: fadein 0.5s, fadeout 0.5s 2.5s;\n"
+            + "      }\n"
+            + "      @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }\n"
+            + "      @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }\n"
             + "    </style>\n"
             + "  </head>\n"
             + "  <body>\n"
@@ -37,43 +58,30 @@ public class TodoServlet extends HttpServlet {
             + "      <table style=\"margin: 0 auto;\">\n"
             + "        <tr>\n"
             + "          <td><label for=\"todayDate\">Today's Date:</label></td>\n"
-            + "          <td>\n"
-            + "            <input type=\"date\" id=\"todayDate\" name=\"todayDate\" required readonly />\n"
-            + "          </td>\n"
+            + "          <td><input type=\"date\" id=\"todayDate\" name=\"todayDate\" required readonly /></td>\n"
             + "        </tr>\n"
             + "        <tr>\n"
             + "          <td><label for=\"todoTitle\">To Do Title:</label></td>\n"
-            + "          <td>\n"
-            + "            <input type=\"text\" id=\"todoTitle\" name=\"todoTitle\" required />\n"
-            + "          </td>\n"
+            + "          <td><input type=\"text\" id=\"todoTitle\" name=\"todoTitle\" required /></td>\n"
             + "        </tr>\n"
             + "        <tr>\n"
             + "          <td><label for=\"todoDescription\">Description:</label></td>\n"
-            + "          <td>\n"
-            + "            <input type=\"text\" id=\"todoDescription\" name=\"todoDescription\" />\n"
-            + "          </td>\n"
+            + "          <td><input type=\"text\" id=\"todoDescription\" name=\"todoDescription\" /></td>\n"
             + "        </tr>\n"
             + "        <tr>\n"
             + "          <td><label for=\"targetDateTime\">Target Date & Time:</label></td>\n"
-            + "          <td>\n"
-            + "            <input type=\"text\" id=\"targetDateTime\" placeholder=\"Select target Date and time\" name=\"targetDateTime\" required />\n"
-            + "          </td>\n"
+            + "          <td><input type=\"text\" id=\"targetDateTime\" placeholder=\"Select target Date and time\" name=\"targetDateTime\" required /></td>\n"
             + "        </tr>\n"
             + "        <tr>\n"
             + "          <td><label for=\"todostatus\">Status:</label></td>\n"
-            + "          <td>\n"
-            + "            <input type=\"text\" id=\"todoStatus\" value=\"Pending\" name=\"todoStatus\" readonly />\n"
-            + "          </td>\n"
+            + "          <td><input type=\"text\" id=\"todoStatus\" value=\"Pending\" name=\"todoStatus\" readonly /></td>\n"
             + "        </tr>\n"
             + "        <tr>\n"
-            + "          <td colspan=\"2\" align=\"center\">\n"
-            + "            <input type=\"submit\" value=\"Add To Do\" />\n"
-            + "          </td>\n"
+            + "          <td colspan=\"2\" align=\"center\"><input type=\"submit\" value=\"Add To Do\" /></td>\n"
             + "        </tr>\n"
             + "      </table>\n"
             + "    </form>\n"
             + "    <h2>To Do List</h2>\n"
-            + "    <div id=\"successMessage\" class=\"success\"></div>\n"
             + "    <table border=\"1\" id=\"todoTable\">\n"
             + "      <thead>\n"
             + "        <tr>\n"
@@ -85,10 +93,9 @@ public class TodoServlet extends HttpServlet {
             + "          <th>Change Status</th>\n"
             + "        </tr>\n"
             + "      </thead>\n"
-            + "      <tbody>\n"
-            + "        %TODO_ROWS%\n"
-            + "      </tbody>\n"
+            + "      <tbody>%TODO_ROWS%</tbody>\n"
             + "    </table>\n"
+            + "    <div id=\"toast\"></div>\n"
             + "    <script src=\"https://cdn.jsdelivr.net/npm/flatpickr\"></script>\n"
             + "    <script>\n"
             + "      document.addEventListener('DOMContentLoaded', function() {\n"
@@ -98,28 +105,38 @@ public class TodoServlet extends HttpServlet {
             + "        var dd = String(today.getDate()).padStart(2, '0');\n"
             + "        var formattedDate = yyyy + '-' + mm + '-' + dd;\n"
             + "        document.getElementById('todayDate').value = formattedDate;\n"
-            + "        flatpickr(\"#targetDateTime\", {\n"
-            + "          enableTime: true,\n"
-            + "          dateFormat: \"Y-m-d H:i\",\n"
-            + "        });\n"
+            + "        flatpickr(\"#targetDateTime\", { enableTime: true, dateFormat: \"Y-m-d H:i\" });\n"
             + "      });\n"
+            + "\n"
+            + "      function showToast(message) {\n"
+            + "        var toast = document.getElementById('toast');\n"
+            + "        toast.innerText = message;\n"
+            + "        toast.className = 'show';\n"
+            + "        setTimeout(function(){ toast.className = toast.className.replace('show', ''); }, 3000);\n"
+            + "      }\n"
+            + "\n"
             + "      function changeStatus(todoId, currentStatus) {\n"
             + "        var newStatus;\n"
-            + "        if (currentStatus === 'Pending') {\n"
-            + "          newStatus = 'In Progress';\n"
-            + "        } else if (currentStatus === 'In Progress') {\n"
-            + "          newStatus = 'Completed';\n"
-            + "        } else {\n"
-            + "          // Do nothing if already Completed\n"
-            + "          return;\n"
-            + "        }\n"
-            + "        \n"
+            + "        if (currentStatus === 'Pending') newStatus = 'In Progress';\n"
+            + "        else if (currentStatus === 'In Progress') newStatus = 'Completed';\n"
+            + "        else return;\n"
+            + "\n"
             + "        fetch('TodoServlet?action=changeStatus&todoId=' + todoId + '&newStatus=' + newStatus)\n"
             + "          .then(response => response.text())\n"
             + "          .then(data => {\n"
-            + "            document.getElementById('successMessage').innerHTML = data;\n"
-            + "            // Reload the page to reflect the status change\n"
-            + "            setTimeout(function() { location.reload(); }, 1000);\n"
+            + "            showToast(data);\n"
+            + "            let statusCell = document.getElementById('status-' + todoId);\n"
+            + "            if (statusCell) statusCell.innerText = newStatus;\n"
+            + "            let btn = document.getElementById('btn-' + todoId);\n"
+            + "            if (btn) {\n"
+            + "              if (newStatus === 'Completed') {\n"
+            + "                btn.innerText = 'Change Status';\n"
+            + "                btn.disabled = true;\n"
+            + "                btn.classList.add('disabled-btn');\n"
+            + "              } else {\n"
+            + "                btn.setAttribute('onclick', \"changeStatus(\" + todoId + \", '\" + newStatus + \"')\");\n"
+            + "              }\n"
+            + "            }\n"
             + "          })\n"
             + "          .catch(error => console.error('Error:', error));\n"
             + "      }\n"
@@ -144,7 +161,6 @@ public class TodoServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // This handles only form submissions for adding new tasks
         try {
             TodoItem newTodo = new TodoItem();
             newTodo.setTodoTitle(request.getParameter("todoTitle"));
@@ -156,9 +172,8 @@ public class TodoServlet extends HttpServlet {
             todoDAO.addTodo(newTodo);
 
             String todoHTML = generateTodoHTML();
-            String acknowledgment = "<script>document.getElementById('successMessage').innerHTML = 'Task submitted successfully!';</script>";
             response.setContentType("text/html");
-            response.getWriter().append(todoHTML + acknowledgment);
+            response.getWriter().append(todoHTML);
         } catch (Exception e) {
             response.getWriter().append("Error: " + e.getMessage());
             e.printStackTrace();
@@ -172,12 +187,9 @@ public class TodoServlet extends HttpServlet {
 
             TodoItem todo = todoDAO.getTodoById(todoId);
             if (todo != null) {
-                String statusCode = "P"; // Default to Pending
-                if ("In Progress".equals(newStatus)) {
-                    statusCode = "I";
-                } else if ("Completed".equals(newStatus)) {
-                    statusCode = "C";
-                }
+                String statusCode = "P";
+                if ("In Progress".equals(newStatus)) statusCode = "I";
+                else if ("Completed".equals(newStatus)) statusCode = "C";
                 todo.setTodoStatusCode(statusCode);
                 todo.setModifiedBy("user");
                 todoDAO.updateTodo(todo);
@@ -203,13 +215,14 @@ public class TodoServlet extends HttpServlet {
                 todoRows.append("<td>").append(todo.getTargetDatetime()).append("</td>");
 
                 String status = getStatusName(todo.getTodoStatusCode());
-                todoRows.append("<td>").append(status).append("</td>");
+                todoRows.append("<td id='status-").append(todo.getTodoId()).append("'>").append(status).append("</td>");
 
-                // Disable button for Completed tasks
                 if (status.equals("Completed")) {
-                    todoRows.append("<td><button class='disabled-btn' disabled>Change Status</button></td>");
+                    todoRows.append("<td><button id='btn-").append(todo.getTodoId())
+                            .append("' class='disabled-btn' disabled>Change Status</button></td>");
                 } else {
-                    todoRows.append("<td><button onclick=\"changeStatus(")
+                    todoRows.append("<td><button id='btn-").append(todo.getTodoId())
+                            .append("' onclick=\"changeStatus(")
                             .append(todo.getTodoId())
                             .append(", '")
                             .append(status)
@@ -221,20 +234,15 @@ public class TodoServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return th.replace("%TODO_ROWS%", todoRows.toString());
     }
 
     private String getStatusName(String statusCode) {
         switch (statusCode) {
-            case "P":
-                return "Pending";
-            case "I":
-                return "In Progress";
-            case "C":
-                return "Completed";
-            default:
-                return "Unknown";
+            case "P": return "Pending";
+            case "I": return "In Progress";
+            case "C": return "Completed";
+            default: return "Unknown";
         }
     }
 }
