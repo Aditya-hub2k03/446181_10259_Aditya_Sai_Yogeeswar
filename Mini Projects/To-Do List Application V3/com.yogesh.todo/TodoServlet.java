@@ -28,6 +28,7 @@ public class TodoServlet extends HttpServlet {
             + "      h1, h2 { text-align: center; }\n"
             + "      .disabled-btn { background-color: #cccccc; cursor: not-allowed; }\n"
             + "      input[type=\"submit\"] { padding: 5px 15px; }\n"
+            + "      input[readonly] { background-color: #f5f5f5; }\n"
             + "      /* Toast Notification */\n"
             + "      #toast {\n"
             + "        visibility: hidden;\n"
@@ -47,6 +48,12 @@ public class TodoServlet extends HttpServlet {
             + "      #toast.show {\n"
             + "        visibility: visible;\n"
             + "        animation: fadein 0.5s, fadeout 0.5s 2.5s;\n"
+            + "      }\n"
+            + "      #toast.success {\n"
+            + "        background-color: #4CAF50;\n"
+            + "      }\n"
+            + "      #toast.error {\n"
+            + "        background-color: #f44336;\n"
             + "      }\n"
             + "      @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }\n"
             + "      @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }\n"
@@ -82,6 +89,7 @@ public class TodoServlet extends HttpServlet {
             + "      </table>\n"
             + "    </form>\n"
             + "    <h2>To Do List</h2>\n"
+            + "    <div id=\"toast\"></div>\n"
             + "    <table border=\"1\" id=\"todoTable\">\n"
             + "      <thead>\n"
             + "        <tr>\n"
@@ -95,7 +103,6 @@ public class TodoServlet extends HttpServlet {
             + "      </thead>\n"
             + "      <tbody>%TODO_ROWS%</tbody>\n"
             + "    </table>\n"
-            + "    <div id=\"toast\"></div>\n"
             + "    <script src=\"https://cdn.jsdelivr.net/npm/flatpickr\"></script>\n"
             + "    <script>\n"
             + "      document.addEventListener('DOMContentLoaded', function() {\n"
@@ -108,10 +115,10 @@ public class TodoServlet extends HttpServlet {
             + "        flatpickr(\"#targetDateTime\", { enableTime: true, dateFormat: \"Y-m-d H:i\" });\n"
             + "      });\n"
             + "\n"
-            + "      function showToast(message) {\n"
+            + "      function showToast(message, isError = false) {\n"
             + "        var toast = document.getElementById('toast');\n"
             + "        toast.innerText = message;\n"
-            + "        toast.className = 'show';\n"
+            + "        toast.className = isError ? 'show error' : 'show success';\n"
             + "        setTimeout(function(){ toast.className = toast.className.replace('show', ''); }, 3000);\n"
             + "      }\n"
             + "\n"
@@ -138,7 +145,10 @@ public class TodoServlet extends HttpServlet {
             + "              }\n"
             + "            }\n"
             + "          })\n"
-            + "          .catch(error => console.error('Error:', error));\n"
+            + "          .catch(error => {\n"
+            + "            console.error('Error:', error);\n"
+            + "            showToast('Error updating status', true);\n"
+            + "          });\n"
             + "      }\n"
             + "    </script>\n"
             + "  </body>\n"
@@ -155,9 +165,26 @@ public class TodoServlet extends HttpServlet {
             handleStatusChange(request, response);
             return;
         }
+
         response.setContentType("text/html");
-        String todoHTML = generateTodoHTML();
-        response.getWriter().append(todoHTML);
+
+        // Check for success message in session
+        String successMessage = (String) request.getSession().getAttribute("successMessage");
+        String errorMessage = (String) request.getSession().getAttribute("errorMessage");
+
+        String html = generateTodoHTML();
+
+        if (successMessage != null) {
+            html = html.replace("</body>", "<script>showToast('" + successMessage + "');</script></body>");
+            request.getSession().removeAttribute("successMessage");
+        }
+
+        if (errorMessage != null) {
+            html = html.replace("</body>", "<script>showToast('" + errorMessage + "', true);</script></body>");
+            request.getSession().removeAttribute("errorMessage");
+        }
+
+        response.getWriter().append(html);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -171,11 +198,16 @@ public class TodoServlet extends HttpServlet {
 
             todoDAO.addTodo(newTodo);
 
-            String todoHTML = generateTodoHTML();
-            response.setContentType("text/html");
-            response.getWriter().append(todoHTML);
+            // Store success message in session
+            request.getSession().setAttribute("successMessage", "Task submitted successfully!");
+
+            // Redirect to GET request to prevent form resubmission
+            response.sendRedirect(request.getContextPath() + "/TodoServlet");
         } catch (Exception e) {
-            response.getWriter().append("Error: " + e.getMessage());
+            // Store error message in session
+            request.getSession().setAttribute("errorMessage", "Error: " + e.getMessage());
+            // Redirect to GET request
+            response.sendRedirect(request.getContextPath() + "/TodoServlet");
             e.printStackTrace();
         }
     }
@@ -213,10 +245,8 @@ public class TodoServlet extends HttpServlet {
                 todoRows.append("<td>").append(todo.getTodoTitle() != null ? todo.getTodoTitle() : "").append("</td>");
                 todoRows.append("<td>").append(todo.getTodoDesc() != null ? todo.getTodoDesc() : "").append("</td>");
                 todoRows.append("<td>").append(todo.getTargetDatetime()).append("</td>");
-
                 String status = getStatusName(todo.getTodoStatusCode());
                 todoRows.append("<td id='status-").append(todo.getTodoId()).append("'>").append(status).append("</td>");
-
                 if (status.equals("Completed")) {
                     todoRows.append("<td><button id='btn-").append(todo.getTodoId())
                             .append("' class='disabled-btn' disabled>Change Status</button></td>");
@@ -228,7 +258,6 @@ public class TodoServlet extends HttpServlet {
                             .append(status)
                             .append("')\">Change Status</button></td>");
                 }
-
                 todoRows.append("</tr>");
             }
         } catch (Exception e) {
