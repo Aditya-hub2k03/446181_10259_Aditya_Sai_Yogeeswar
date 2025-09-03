@@ -5,11 +5,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import com.yogesh.dao.TodoDAO;
-import com.yogesh.dao.TodoItem;
+import com.yogesh.dao.*;
+
 
 @WebServlet("/TodoServlet")
 public class TodoServlet extends HttpServlet {
@@ -29,6 +30,8 @@ public class TodoServlet extends HttpServlet {
             + "      .disabled-btn { background-color: #cccccc; cursor: not-allowed; }\n"
             + "      input[type=\"submit\"] { padding: 5px 15px; }\n"
             + "      input[readonly] { background-color: #f5f5f5; }\n"
+            + "      .user-info { text-align: right; margin: 10px 20px; }\n"
+            + "      .logout-btn { padding: 5px 10px; background-color: #f44336; color: white; border: none; border-radius: 3px; }\n"
             + "      /* Toast Notification */\n"
             + "      #toast {\n"
             + "        visibility: hidden;\n"
@@ -60,6 +63,10 @@ public class TodoServlet extends HttpServlet {
             + "    </style>\n"
             + "  </head>\n"
             + "  <body>\n"
+            + "    <div class=\"user-info\">\n"
+            + "      Welcome, <span id=\"username\">%USERNAME%</span>!\n"
+            + "      <button class=\"logout-btn\" onclick=\"window.location.href='LogoutServlet'\">Logout</button>\n"
+            + "    </div>\n"
             + "    <h1>To Do List</h1>\n"
             + "    <form method=\"post\" action=\"TodoServlet\">\n"
             + "      <table style=\"margin: 0 auto;\">\n"
@@ -99,6 +106,7 @@ public class TodoServlet extends HttpServlet {
             + "          <th>Target Date & Time</th>\n"
             + "          <th>Current Status</th>\n"
             + "          <th>Change Status</th>\n"
+            + "          <th>Delete</th>\n"
             + "        </tr>\n"
             + "      </thead>\n"
             + "      <tbody>%TODO_ROWS%</tbody>\n"
@@ -150,6 +158,21 @@ public class TodoServlet extends HttpServlet {
             + "            showToast('Error updating status', true);\n"
             + "          });\n"
             + "      }\n"
+            + "\n"
+            + "      function deleteTodo(todoId) {\n"
+            + "        if (confirm('Are you sure you want to delete this task?')) {\n"
+            + "          fetch('TodoServlet?action=deleteTodo&todoId=' + todoId)\n"
+            + "            .then(response => response.text())\n"
+            + "            .then(data => {\n"
+            + "              showToast(data);\n"
+            + "              setTimeout(function() { location.reload(); }, 1000);\n"
+            + "            })\n"
+            + "            .catch(error => {\n"
+            + "              console.error('Error:', error);\n"
+            + "              showToast('Error deleting task', true);\n"
+            + "            });\n"
+            + "        }\n"
+            + "      }\n"
             + "    </script>\n"
             + "  </body>\n"
             + "</html>";
@@ -160,9 +183,19 @@ public class TodoServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login.html");
+            return;
+        }
+
         String action = request.getParameter("action");
         if ("changeStatus".equals(action)) {
             handleStatusChange(request, response);
+            return;
+        } else if ("deleteTodo".equals(action)) {
+            handleDeleteTodo(request, response);
             return;
         }
 
@@ -172,7 +205,9 @@ public class TodoServlet extends HttpServlet {
         String successMessage = (String) request.getSession().getAttribute("successMessage");
         String errorMessage = (String) request.getSession().getAttribute("errorMessage");
 
-        String html = generateTodoHTML();
+        // Get current user
+        UserItem user = (UserItem) session.getAttribute("user");
+        String html = generateTodoHTML(user);
 
         if (successMessage != null) {
             html = html.replace("</body>", "<script>showToast('" + successMessage + "');</script></body>");
@@ -188,13 +223,23 @@ public class TodoServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login.html");
+            return;
+        }
+
         try {
+        	UserItem user = (UserItem) session.getAttribute("user");
+
             TodoItem newTodo = new TodoItem();
             newTodo.setTodoTitle(request.getParameter("todoTitle"));
             newTodo.setTodoDesc(request.getParameter("todoDescription"));
             newTodo.setTargetDatetime(LocalDateTime.parse(request.getParameter("targetDateTime").replace(" ", "T")));
             newTodo.setTodoStatusCode("P");
-            newTodo.setCreatedBy("user");
+            newTodo.setUserId(user.getUserId());
+            newTodo.setCreatedBy(user.getUsername());
 
             todoDAO.addTodo(newTodo);
 
@@ -213,21 +258,29 @@ public class TodoServlet extends HttpServlet {
     }
 
     private void handleStatusChange(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.getWriter().write("You must be logged in to change status");
+            return;
+        }
+
         try {
             int todoId = Integer.parseInt(request.getParameter("todoId"));
             String newStatus = request.getParameter("newStatus");
+            UserItem user = (UserItem) session.getAttribute("user");
 
-            TodoItem todo = todoDAO.getTodoById(todoId);
+            TodoItem todo = todoDAO.getTodoById(todoId, user.getUserId());
             if (todo != null) {
                 String statusCode = "P";
                 if ("In Progress".equals(newStatus)) statusCode = "I";
                 else if ("Completed".equals(newStatus)) statusCode = "C";
                 todo.setTodoStatusCode(statusCode);
-                todo.setModifiedBy("user");
+                todo.setModifiedBy(user.getUsername());
                 todoDAO.updateTodo(todo);
                 response.getWriter().write("Status updated to " + newStatus + " successfully!");
             } else {
-                response.getWriter().write("Todo item not found!");
+                response.getWriter().write("Todo item not found or you don't have permission!");
             }
         } catch (Exception e) {
             response.getWriter().write("Error: " + e.getMessage());
@@ -235,10 +288,31 @@ public class TodoServlet extends HttpServlet {
         }
     }
 
-    private String generateTodoHTML() {
+    private void handleDeleteTodo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.getWriter().write("You must be logged in to delete tasks");
+            return;
+        }
+
+        try {
+            int todoId = Integer.parseInt(request.getParameter("todoId"));
+            UserItem user = (UserItem) session.getAttribute("user");
+
+            todoDAO.deleteTodo(todoId, user.getUserId());
+            response.getWriter().write("Task deleted successfully!");
+        } catch (Exception e) {
+            response.getWriter().write("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private String generateTodoHTML(UserItem user) {
         StringBuilder todoRows = new StringBuilder();
         try {
-            List<TodoItem> todos = todoDAO.getAllTodos();
+            // Get only todos for the current user
+            List<TodoItem> todos = todoDAO.getAllTodos(user.getUserId());
             for (TodoItem todo : todos) {
                 todoRows.append("<tr>");
                 todoRows.append("<td>").append(todo.getTodoId()).append("</td>");
@@ -247,6 +321,8 @@ public class TodoServlet extends HttpServlet {
                 todoRows.append("<td>").append(todo.getTargetDatetime()).append("</td>");
                 String status = getStatusName(todo.getTodoStatusCode());
                 todoRows.append("<td id='status-").append(todo.getTodoId()).append("'>").append(status).append("</td>");
+
+                // Change Status button
                 if (status.equals("Completed")) {
                     todoRows.append("<td><button id='btn-").append(todo.getTodoId())
                             .append("' class='disabled-btn' disabled>Change Status</button></td>");
@@ -258,12 +334,20 @@ public class TodoServlet extends HttpServlet {
                             .append(status)
                             .append("')\">Change Status</button></td>");
                 }
+
+                // Delete button
+                todoRows.append("<td><button onclick=\"deleteTodo(")
+                        .append(todo.getTodoId())
+                        .append(")\" style='background-color: #f44336; color: white;'>Delete</button></td>");
+
                 todoRows.append("</tr>");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return th.replace("%TODO_ROWS%", todoRows.toString());
+
+        return th.replace("%USERNAME%", user.getUsername())
+                .replace("%TODO_ROWS%", todoRows.toString());
     }
 
     private String getStatusName(String statusCode) {
