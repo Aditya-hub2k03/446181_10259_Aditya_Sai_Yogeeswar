@@ -6,7 +6,7 @@
 [![HTML](https://img.shields.io/badge/Language-HTML5-red)](https://developer.mozilla.org/docs/Web/HTML)<br>
 [![CSS](https://img.shields.io/badge/Language-CSS5-blue)](https://developer.mozilla.org/docs/Web/CSS)
 
----
+--- 
 
 ## ​ Table of Contents
 
