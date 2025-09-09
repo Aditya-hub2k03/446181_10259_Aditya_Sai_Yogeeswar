@@ -1,0 +1,26 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Address bean using constructor -->
+    <bean id="address" class="com.xmldi.cisimix.Address">
+        <constructor-arg value="Seattle"/>
+        <constructor-arg value="WA"/>
+    </bean>
+
+    <!-- Student bean using constructor for id and name, setter for address and subjects -->
+    <bean id="student" class="com.xmldi.cisimix.Student">
+        <constructor-arg value="104"/>
+        <constructor-arg value="Michael Scott"/>
+        
+        <property name="address" ref="address"/>
+        <property name="subjects">
+            <array>
+                <value>Business</value>
+                <value>Management</value>
+            </array>
+        </property>
+    </bean>
+
+</beans>
