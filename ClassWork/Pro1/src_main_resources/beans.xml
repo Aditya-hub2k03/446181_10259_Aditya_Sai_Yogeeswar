@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!-- Address bean -->
+    <bean id="address" class="com.yogesh.xmlbased.Address">
+        <property name="city" value="New York" />
+        <property name="state" value="NY" />
+    </bean>
+
+    <!-- Student bean -->
+    <bean id="student" class="com.yogesh.xmlbased.Student">
+        <property name="id" value="101" />
+        <property name="name" value="John Doe" />
+        <property name="address" ref="address" />
+    </bean>
+
+</beans>
