@@ -8,7 +8,7 @@ public class FrontView {
         System.out.println("1. Grocery Items");
         System.out.println("2. Electronic Appliances");
         System.out.println("3. Mobile Phones");
-        System.out.println("4. Go to Cart");
+        System.out.println("4. Go to Cart"); 
         System.out.println("5. Exit");
     }
 
