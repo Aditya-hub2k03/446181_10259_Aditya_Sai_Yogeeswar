@@ -17,10 +17,10 @@
  
 ---
 
-## ​ About  
+## ​ About   
 This repository showcases work under the **TMF Java Full Stack** program, authored by **Aditya Sai Yogeeswar Pyda (ID: 446181)**. It contains a variety of classwork, mini-projects, and structured examples. Repository branches are organized by directories for easy navigation.
 
----
+--- 
 
 ## ​ Live Demo / GitHub Pages  
 A GitHub Pages version of the project is available at:  
