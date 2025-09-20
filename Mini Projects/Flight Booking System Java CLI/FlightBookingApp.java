@@ -11,7 +11,7 @@ public class FlightBookingApp {
         // Show today's date at the start 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String todayStr = sdf.format(new Date());
-        System.out.println("======================================");
+        System.out.println("======================================"); 
         System.out.println("   Flight Booking System");
         System.out.println("   Today's Date: " + todayStr);
         System.out.println("======================================\n");
