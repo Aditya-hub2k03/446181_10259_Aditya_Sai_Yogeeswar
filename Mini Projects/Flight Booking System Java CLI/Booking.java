@@ -9,7 +9,7 @@ public class Booking {
 		this.passenger = passenger;
 		this.flight = flight;
 		this.date = date; 
-		
+		 
 	}
 	public void display() {
 		System.out.println("Passenger: "+passenger.getName() + "("+passenger.getContact()+")");
