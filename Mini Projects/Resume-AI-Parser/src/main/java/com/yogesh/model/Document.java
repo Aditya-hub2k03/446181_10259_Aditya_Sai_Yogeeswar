@@ -1,0 +1,27 @@
+package com.yogesh.model;
+
+public class Document {
+    private int id;
+    private String content;
+
+    public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Document(String content) {
+        this.content = content;
+    }
+    // Getters and Setters
+}
