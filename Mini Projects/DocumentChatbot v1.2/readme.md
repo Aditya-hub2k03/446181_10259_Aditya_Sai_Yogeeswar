@@ -1,5 +1,5 @@
-using ollama->phi3
-spring mvc
-mysql
-tomcat10.1(jakarta)
-java17
+using ollama->phi3<br>
+spring mvc<br>
+mysql<br>
+tomcat10.1(jakarta)<br>
+java17<br>
