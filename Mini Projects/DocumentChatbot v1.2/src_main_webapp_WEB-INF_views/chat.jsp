@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html>
+<html> 
 <head>
     <title>Chat Interface</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
