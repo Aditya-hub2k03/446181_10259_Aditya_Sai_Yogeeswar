@@ -24,3 +24,4 @@ public class DbConfig {
         return new JdbcTemplate(dataSource);
     }
 }
+ 
