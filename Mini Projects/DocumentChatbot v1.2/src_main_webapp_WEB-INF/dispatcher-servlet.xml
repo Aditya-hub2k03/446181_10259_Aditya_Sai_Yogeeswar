@@ -13,7 +13,9 @@
 
     <context:component-scan base-package="com.yogesh" />
 
-    <mvc:annotation-driven />
+    <mvc:annotation-driven>
+        <mvc:async-support default-timeout="60000"/>
+    </mvc:annotation-driven>
 
     <!-- Use StandardServletMultipartResolver for Jakarta EE 9+ -->
     <bean id="multipartResolver"
