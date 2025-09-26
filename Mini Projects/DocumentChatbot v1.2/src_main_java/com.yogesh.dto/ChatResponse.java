@@ -3,7 +3,6 @@ package com.yogesh.dto;
 public class ChatResponse {
     private String response;
 
-    // Default constructor for JSON binding
     public ChatResponse() {}
 
     public ChatResponse(String response) {
