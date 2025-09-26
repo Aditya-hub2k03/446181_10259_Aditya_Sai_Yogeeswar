@@ -17,5 +17,6 @@ CREATE TABLE documents (
     content LONGTEXT,
     type VARCHAR(100)
 );
+ALTER TABLE documents MODIFY content LONGTEXT;
 
 select * from documents;
