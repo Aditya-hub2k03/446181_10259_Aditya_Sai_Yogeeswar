@@ -24,8 +24,11 @@ public class DocumentService {
 
     public void saveDocument(MultipartFile file) throws IOException {
         String content = extractTextFromFile(file);
+        // Store only the first 100,000 characters to avoid database issues
+        String truncatedContent = content.length() > 100000 ? content.substring(0, 100000) : content;
+
         String sql = "INSERT INTO documents (name, content, type) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, file.getOriginalFilename(), content, file.getContentType());
+        jdbcTemplate.update(sql, file.getOriginalFilename(), truncatedContent, file.getContentType());
     }
 
     private String extractTextFromFile(MultipartFile file) throws IOException {
@@ -41,13 +44,16 @@ public class DocumentService {
     private String extractTextFromPDF(MultipartFile file) throws IOException {
         PDDocument document = PDDocument.load(file.getInputStream());
         PDFTextStripper stripper = new PDFTextStripper();
+        stripper.setSortByPosition(true);
+        stripper.setStartPage(1);
+        stripper.setEndPage(document.getNumberOfPages());
         String text = stripper.getText(document);
         document.close();
         return text;
     }
 
     public List<Document> getAllDocuments() {
-        String sql = "SELECT * FROM documents";
+        String sql = "SELECT * FROM documents ORDER BY id DESC";
         return jdbcTemplate.query(sql, new RowMapper<Document>() {
             @Override
             public Document mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -63,6 +69,11 @@ public class DocumentService {
 
     public String getDocumentContent(int id) {
         String sql = "SELECT content FROM documents WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, String.class, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, String.class, id);
+        } catch (Exception e) {
+            System.err.println("Error retrieving document content: " + e.getMessage());
+            return "";
+        }
     }
 }
