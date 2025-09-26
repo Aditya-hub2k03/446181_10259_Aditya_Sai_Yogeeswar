@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,18 +24,28 @@ public class ChatService {
     @Autowired
     private DocumentService documentService;
 
-    public SseEmitter processMessageStream(ChatRequest request) {
-        return ollamaService.getOllamaResponseStream(request.getMessage(), request.getModel());
+    public DeferredResult<String> processMessageStream(ChatRequest request) {
+        // Enhance the prompt for better responses
+        String enhancedPrompt = request.getMessage() + "\n\nPlease provide a detailed response with at least 3 sentences.";
+        return ollamaService.getOllamaResponseAsync(enhancedPrompt, request.getModel());
     }
 
-    public SseEmitter processMessageWithDocumentStream(ChatRequest request, int documentId) {
+    public DeferredResult<String> processMessageWithDocumentStream(ChatRequest request, int documentId) {
         String documentContent = documentService.getDocumentContent(documentId);
-        String prompt = "Document Content:\n" + documentContent + "\n\nQuestion: " + request.getMessage();
-        return ollamaService.getOllamaResponseStream(prompt, request.getModel());
+        return ollamaService.getOllamaResponseAsync(
+            ollamaService.getResponseWithDocumentContext(
+                documentContent,
+                request.getMessage(),
+                request.getModel()
+            ),
+            request.getModel()
+        );
     }
 
     public ChatResponse processMessage(ChatRequest request) {
-        String response = ollamaService.getOllamaResponse(request.getMessage(), request.getModel());
+        // Enhance the prompt for better responses
+        String enhancedPrompt = request.getMessage() + "\n\nPlease provide a detailed response with at least 3 sentences.";
+        String response = ollamaService.getOllamaResponse(enhancedPrompt, request.getModel());
         saveMessage(request.getMessage(), response, request.getModel());
 
         ChatResponse chatResponse = new ChatResponse();
@@ -45,8 +55,11 @@ public class ChatService {
 
     public ChatResponse processMessageWithDocument(ChatRequest request, int documentId) {
         String documentContent = documentService.getDocumentContent(documentId);
-        String prompt = "Document Content:\n" + documentContent + "\n\nQuestion: " + request.getMessage();
-        String response = ollamaService.getOllamaResponse(prompt, request.getModel());
+        String response = ollamaService.getResponseWithDocumentContext(
+            documentContent,
+            request.getMessage(),
+            request.getModel()
+        );
         saveMessage(request.getMessage(), response, request.getModel());
 
         ChatResponse chatResponse = new ChatResponse();
@@ -55,7 +68,7 @@ public class ChatService {
     }
 
     public List<ChatMessage> getAllMessages() {
-        String sql = "SELECT * FROM chat_messages";
+        String sql = "SELECT * FROM chat_messages ORDER BY id DESC LIMIT 20";
         return jdbcTemplate.query(sql, new RowMapper<ChatMessage>() {
             @Override
             public ChatMessage mapRow(ResultSet rs, int rowNum) throws SQLException {
