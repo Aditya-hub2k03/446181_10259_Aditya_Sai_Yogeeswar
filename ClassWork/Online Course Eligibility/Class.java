@@ -9,7 +9,7 @@ public class Course {
         this.courseName = courseName;
         this.instructor = instructor;
         this.credits = credits;
-    }
+    } 
 
     public void displayCourseDetails() {
         System.out.println("Course Name: " + courseName);
