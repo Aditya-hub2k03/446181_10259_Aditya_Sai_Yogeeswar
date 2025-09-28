@@ -13,7 +13,7 @@ CREATE TABLE users (
     modified_on DATETIME
 );
 
-select * from users;
+select * from users; 
 
 CREATE TABLE IF NOT EXISTS movies (
     movie_id BIGINT AUTO_INCREMENT PRIMARY KEY,
