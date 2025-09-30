@@ -9,7 +9,7 @@
     <%
         List<String> cart = (List<String>) session.getAttribute("cart");
         if (cart == null || cart.isEmpty()) {
-    %>
+    %> 
         <p>Your cart is empty.</p>
     <%
         } else {
