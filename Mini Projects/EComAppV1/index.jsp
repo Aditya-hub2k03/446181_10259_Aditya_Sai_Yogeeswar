@@ -9,7 +9,7 @@
         .item h3 { margin:0; }
     </style>
 </head>
-<body>
+<body> 
     <h1>Available Items</h1>
     <%
         List<Map<String,Object>> items = (List<Map<String,Object>>)request.getAttribute("items");
