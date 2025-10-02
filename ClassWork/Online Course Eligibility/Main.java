@@ -11,5 +11,5 @@ public class Main {
         } else {
             System.out.println("This course is not eligible for a certificate.");
         }
-    } 
+    }  
 }
