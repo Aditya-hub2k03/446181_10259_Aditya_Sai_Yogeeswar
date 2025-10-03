@@ -6,7 +6,7 @@ public class MainDriver {
         Scanner sc = new Scanner(System.in);
         Menu menu = new Menu();
 
-        int choice; 
+        int choice;  
         do {
             System.out.println("\n--- Welcome to Restaurant Management System ---");
             System.out.println("1. Customer");
