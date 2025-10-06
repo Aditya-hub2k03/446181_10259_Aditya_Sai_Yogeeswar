@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Size Changer</title>
+    <style>
+        #text {
+            font-size: 16px;
+            margin: 20px;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Font Size Changer</h1>
+    <button onclick="changeFontSize(1)">Increase Font Size</button>
+    <button onclick="changeFontSize(-1)">Decrease Font Size</button>
+    <p id="text">This is a sample text. Click the buttons above to change its font size.</p>
+
+    <script>
+        function changeFontSize(change) {
+            const textElement = document.getElementById('text');
+            const currentSize = parseInt(window.getComputedStyle(textElement).fontSize);
+            textElement.style.fontSize = (currentSize + change) + 'px';
+        }
+    </script>
+</body>
+</html>
