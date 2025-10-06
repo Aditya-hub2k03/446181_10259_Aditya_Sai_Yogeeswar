@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Image</title>
+    <style>
+        img {
+            max-width: 300px;
+            margin: 20px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Change Image Example</h1>
+    <img id="myImage" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Hitler_portrait_crop.jpg/960px-Hitler_portrait_crop.jpg" alt="Sample Image">
+    <div>
+        <button onclick="changeImage('https://encyclopedia.1914-1918-online.net/wp-content/uploads/2024/07/eo/Stalin_IMG.png')">
+            Show Image 2
+        </button>
+        <button onclick="changeImage('https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Nathuram_godse.jpg/250px-Nathuram_godse.jpg')">
+            Show Image 3
+        </button>
+    </div>
+
+    <script>
+        function changeImage(newSrc) {
+            document.getElementById('myImage').src = newSrc;
+        }
+    </script>
+</body>
+</html>
