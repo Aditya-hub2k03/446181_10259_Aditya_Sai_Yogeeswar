@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Like Button</title>
+    <style>
+        #likeButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+        }
+        #likeButton.liked {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Like Button</h1>
+    <button id="likeButton" onclick="toggleLike()">Like</button>
+
+    <script>
+        function toggleLike() {
+            const button = document.getElementById('likeButton');
+            if (button.textContent === 'Like') {
+                button.textContent = 'Unlike';
+                button.classList.add('liked');
+            } else {
+                button.textContent = 'Like';
+                button.classList.remove('liked');
+            }
+        }
+    </script>
+</body>
+</html>
