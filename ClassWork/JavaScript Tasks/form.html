@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submission</title>
+    <style>
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Form Submission</h1>
+    <form id="myForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label>Gender:</label>
+        <input type="radio" id="male" name="gender" value="Male">
+        <label for="male" style="display: inline;">Male</label>
+        <input type="radio" id="female" name="gender" value="Female">
+        <label for="female" style="display: inline;">Female</label>
+
+        <label for="hobbies">Hobbies:</label>
+        <input type="checkbox" id="reading" name="hobbies" value="Reading">
+        <label for="reading" style="display: inline;">Reading</label>
+        <input type="checkbox" id="sports" name="hobbies" value="Sports">
+        <label for="sports" style="display: inline;">Sports</label>
+        <input type="checkbox" id="music" name="hobbies" value="Music">
+        <label for="music" style="display: inline;">Music</label>
+
+        <label for="country">Country:</label>
+        <select id="country" name="country">
+            <option value="USA">USA</option>
+            <option value="India">India</option>
+            <option value="UK">UK</option>
+            <option value="Canada">Canada</option>
+        </select>
+
+        <label for="birthdate">Birthdate:</label>
+        <input type="date" id="birthdate" name="birthdate">
+
+        <button type="button" onclick="showDetails()">Submit</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script>
+        function showDetails() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const gender = document.querySelector('input[name="gender"]:checked');
+            const hobbies = Array.from(document.querySelectorAll('input[name="hobbies"]:checked')).map(hobby => hobby.value);
+            const country = document.getElementById('country').value;
+            const birthdate = document.getElementById('birthdate').value;
+
+            const output = document.getElementById('output');
+            output.innerHTML = `
+                <strong>Entered Details:</strong>
+                Name: ${name}
+                Email: ${email}
+                Gender: ${gender ? gender.value : 'Not specified'}
+                Hobbies: ${hobbies.length > 0 ? hobbies.join(', ') : 'None'}
+                Country: ${country}
+                Birthdate: ${birthdate}
+            `;
+        }
+    </script>
+</body>
+</html>
