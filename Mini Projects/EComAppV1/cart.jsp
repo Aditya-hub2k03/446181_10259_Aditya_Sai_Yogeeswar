@@ -5,7 +5,7 @@
     <title>Your Cart</title>
 </head>
 <body>
-    <h1>Shopping Cart</h1>
+    <h1>Shopping Cart</h1> 
     <%
         List<String> cart = (List<String>) session.getAttribute("cart");
         if (cart == null || cart.isEmpty()) {
