@@ -1,0 +1,3 @@
+errors till now:
+
+the project runs fine but the home page or any other page doesnt show any information
