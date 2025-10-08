@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Movie Booking — JS Version</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --accent:#ff4d6d;
+      --muted:#b4bcc8;
+      --text:#f2f5fa;
+      --radius:12px;
+      font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:linear-gradient(180deg,#071021 0%,#08131d 100%);
+      color:var(--text);
+      padding:32px 16px;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      min-height:100vh;
+      font-size:16px;
+    }
+    .container{max-width:1200px;width:100%;}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+    .brand{display:flex;gap:12px;align-items:center;}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7b61ff 80%);
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:white;}
+    .btn{padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);
+      background:transparent;color:var(--text);font-weight:600;cursor:pointer;transition:0.2s;}
+    .btn:hover{background:rgba(255,255,255,0.08);}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#7b61ff);border:none;color:white;}
+    .hero{display:flex;gap:16px;align-items:center;background:rgba(255,255,255,0.04);
+      border-radius:var(--radius);padding:18px;margin-bottom:24px;}
+    .search{display:flex;gap:12px;flex:1;}
+    .search input{flex:1;padding:12px 14px;border:none;border-radius:10px;background:rgba(255,255,255,0.06);color:white;}
+    .select select{padding:10px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#7b61ff);color:black;font-weight:600;}
+    .search-btn button{padding:10px 16px;border:none;border-radius:10px;background:linear-gradient(90deg,var(--accent),#7b61ff);color:white;font-weight:700;}
+    .content{display:grid;grid-template-columns:1fr 320px;gap:20px;}
+    .movies{display:flex;flex-direction:column;gap:14px;}
+    .section-head{display:flex;justify-content:space-between;align-items:center;}
+    .chip{background:rgba(255,255,255,0.08);padding:8px 12px;border-radius:999px;font-size:13px;cursor:pointer;}
+    .movies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;}
+    .card{background:rgba(255,255,255,0.04);border-radius:12px;overflow:hidden;transition:0.2s;}
+    .card:hover{transform:translateY(-6px);box-shadow:0 10px 40px rgba(0,0,0,0.5);}
+    .poster{position:relative;}
+    .poster img{width:100%;height:240px;object-fit:cover;}
+    .rating{position:absolute;right:10px;top:10px;background:rgba(0,0,0,0.6);padding:6px 8px;border-radius:8px;font-size:13px;}
+    .meta{padding:12px;}
+    .meta p{color:var(--muted);font-size:13px;margin-top:6px;}
+    .actions{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,0.08);}
+    .actions button{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:white;font-weight:600;cursor:pointer;}
+    .actions button.book{background:linear-gradient(90deg,var(--accent),#7b61ff);border:none;}
+    .sidebar{background:rgba(255,255,255,0.04);padding:16px;border-radius:12px;}
+    .location label{font-size:13px;color:var(--muted)}
+    .location input,.location select{width:100%;padding:10px;margin-top:5px;margin-bottom:12px;border:none;border-radius:10px;}
+  </style>
+</head>
+<body>
+  <script>
+    // ----- Movie Data -----
+    const movies = [
+      {
+        title: "Inglourious Basterds",
+        desc: "War Action · 2h 33m · English",
+        rating: "★ 8.4",
+        img: "https://m.media-amazon.com/images/M/MV5BODZhMWJlNjYtNDExNC00MTIzLTllM2ItOGQ2NGVjNDQ3MzkzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
+      },
+      {
+        title: "Fight Club",
+        desc: "Action · 2h 19m · English",
+        rating: "★ 8.8",
+        img: "https://m.media-amazon.com/images/M/MV5BOTgyOGQ1NDItNGU3Ny00MjU3LTg2YWEtNmEyYjBiMjI1Y2M5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
+      },
+      {
+        title: "The Texas Chain Saw Massacre",
+        desc: "Horror · 1h 23m · English",
+        rating: "★ 7.4",
+        img: "https://m.media-amazon.com/images/M/MV5BYjE1MGJkMjUtY2VkNi00N2U1LWI2NWEtMDExNGYzYjRkZTM0XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
+      },
+      {
+        title: "Django Unchained",
+        desc: "Western · 2h 45m · English",
+        rating: "★ 8.5",
+        img: "https://m.media-amazon.com/images/M/MV5BMjIyNTQ5NjQ1OV5BMl5BanBnXkFtZTcwODg1MDU4OA@@._V1_FMjpg_UX1000_.jpg"
+      }
+    ];
+
+    // ----- Root Container -----
+    const container = document.createElement("div");
+    container.className = "container";
+    document.body.appendChild(container);
+
+    // ----- HEADER -----
+    const header = document.createElement("header");
+    header.innerHTML = `
+      <div class="brand">
+        <div class="logo"><span>MB</span></div>
+        <div>
+          <h1>MovieBox</h1>
+          <p>Book tickets · Discover · Watch</p>
+        </div>
+      </div>
+      <nav class="controls">
+        <button class="btn">Sign in</button>
+        <button class="btn primary">Register</button>
+      </nav>
+    `;
+    container.appendChild(header);
+
+    // ----- HERO SECTION -----
+    const hero = document.createElement("div");
+    hero.className = "hero";
+    hero.innerHTML = `
+      <div class="search">
+        <input type="search" placeholder="Search movies, actors, genres...">
+        <div class="select">
+          <select>
+            <option>All cities</option>
+            <option>Visakhapatnam</option>
+            <option>Chennai</option>
+            <option>New Delhi</option>
+            <option>Mumbai</option>
+            <option>Bengaluru</option>
+            <option>Kolkata</option>
+          </select>
+          <select>
+            <option>All languages</option>
+            <option>English</option>
+            <option>Hindi</option>
+            <option>Telugu</option>
+            <option>Tamil</option>
+            <option>Malayalam</option>
+            <option>Kannada</option>
+          </select>
+        </div>
+      </div>
+      <div class="search-btn">
+        <button>Search</button>
+      </div>
+    `;
+    container.appendChild(hero);
+
+    // ----- CONTENT -----
+    const main = document.createElement("main");
+    main.className = "content";
+    container.appendChild(main);
+
+    // ----- MOVIES SECTION -----
+    const section = document.createElement("section");
+    section.className = "movies";
+    section.innerHTML = `
+      <div class="section-head">
+        <h2>Now Showing</h2>
+        <div class="filters">
+          <div class="chip">Top Rated</div>
+          <div class="chip">New Releases</div>
+          <div class="chip">Action</div>
+          <div class="chip">Comedy</div>
+        </div>
+      </div>
+    `;
+    const grid = document.createElement("div");
+    grid.className = "movies-grid";
+    section.appendChild(grid);
+    main.appendChild(section);
+
+    // Create movie cards
+    movies.forEach(m => {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `
+        <a href="#" class="poster">
+          <img src="${m.img}" alt="${m.title}">
+          <div class="rating">${m.rating}</div>
+        </a>
+        <div class="meta">
+          <strong>${m.title}</strong>
+          <p>${m.desc}</p>
+        </div>
+        <div class="actions">
+          <button>Details</button>
+          <button class="book">Book</button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    // ----- SIDEBAR -----
+    const sidebar = document.createElement("aside");
+    sidebar.className = "sidebar";
+    sidebar.innerHTML = `
+      <div class="location">
+        <label for="city">Your location</label>
+        <select id="city">
+          <option>Visakhapatnam</option>
+          <option>New Delhi</option>
+          <option>Mumbai</option>
+          <option>Bengaluru</option>
+          <option>Kolkata</option>
+          <option>Chennai</option>
+        </select>
+
+        <label for="theatre">Preferred theatre (optional)</label>
+        <input id="theatre" placeholder="Search theatre name">
+      </div>
+    `;
+    main.appendChild(sidebar);
+  </script>
+</body>
+</html>
