@@ -3,6 +3,6 @@
 <p>Create a database in MySQL/Xampp</p>
 <p>Command: CREATE DATABASE hbm_test1</p>
 
-
+<p>###############################################################################</p>
 <p>Error: When project is not running</p>
 <p>Fix: Main Class implementation must be deleted from both Debug Configurations and Run Configurations.</p>
