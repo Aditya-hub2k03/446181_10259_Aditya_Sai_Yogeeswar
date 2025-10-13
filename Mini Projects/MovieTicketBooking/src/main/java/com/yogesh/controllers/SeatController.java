@@ -27,12 +27,33 @@ public class SeatController {
     }
 
     @PostMapping("/reserve")
-    public String reserveSeat(@RequestParam(name = "seatId") int seatId, @RequestParam(name = "showId") int showId) {
-        boolean success = seatService.reserveSeatTemporarily(seatId, showId);
+    public String reserveSeat(
+            @RequestParam(name = "showId") int showId,
+            @RequestParam(name = "seatIds") String seatIds) {
+        if (seatIds == null || seatIds.isEmpty()) {
+            return "redirect:/seat/layout?showId=" + showId + "&error=No seats selected";
+        }
+
+        String[] seatIdArray = seatIds.split(",");
+        boolean success = true;
+
+        for (String seatIdStr : seatIdArray) {
+            try {
+                int seatId = Integer.parseInt(seatIdStr);
+                if (!seatService.reserveSeatTemporarily(seatId, showId)) {
+                    success = false;
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                success = false;
+                break;
+            }
+        }
+
         if (success) {
-            return "redirect:/MovieTicketBooking/seat/layout?showId=" + showId + "&reserveSuccess";
+            return "redirect:/seat/layout?showId=" + showId + "&reserveSuccess";
         } else {
-            return "redirect:/MovieTicketBooking/seat/layout?showId=" + showId + "&reserveError";
+            return "redirect:/seat/layout?showId=" + showId + "&reserveError";
         }
     }
 }
