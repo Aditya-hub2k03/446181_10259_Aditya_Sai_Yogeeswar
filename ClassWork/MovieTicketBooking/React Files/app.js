@@ -51,8 +51,16 @@ const Hero = () => (
     <div className="search">
       <input type="search" placeholder="Search movies, actors, genres..." />
       <div className="select">
-        <select>{["All cities","Visakhapatnam","Chennai","New Delhi","Mumbai","Bengaluru","Kolkata"].map((c,i)=><option key={i}>{c}</option>)}</select>
-        <select>{["All languages","English","Hindi","Telugu","Tamil","Malayalam","Kannada"].map((c,i)=><option key={i}>{c}</option>)}</select>
+        <select>
+          {["All cities","Visakhapatnam","Chennai","New Delhi","Mumbai","Bengaluru","Kolkata"].map((c, i) => (
+            <option key={i}>{c}</option>
+          ))}
+        </select>
+        <select>
+          {["All languages","English","Hindi","Telugu","Tamil","Malayalam","Kannada"].map((c, i) => (
+            <option key={i}>{c}</option>
+          ))}
+        </select>
       </div>
     </div>
     <div className="search-btn">
@@ -83,11 +91,13 @@ const MoviesSection = () => (
     <div className="section-head">
       <h2>Now Showing</h2>
       <div className="filters">
-        {["Top Rated","New Releases","Action","Comedy"].map((f,i)=><div key={i} className="chip">{f}</div>)}
+        {["Top Rated","New Releases","Action","Comedy"].map((f, i) => (
+          <div key={i} className="chip">{f}</div>
+        ))}
       </div>
     </div>
     <div className="movies-grid">
-      {movies.map((m,i)=><MovieCard key={i} movie={m} />)}
+      {movies.map((m, i) => <MovieCard key={i} movie={m} />)}
     </div>
   </section>
 );
@@ -96,7 +106,11 @@ const Sidebar = () => (
   <aside className="sidebar">
     <div className="location">
       <label htmlFor="city">Your location</label>
-      <select id="city">{["Visakhapatnam","New Delhi","Mumbai","Bengaluru","Kolkata","Chennai"].map((c,i)=><option key={i}>{c}</option>)}</select>
+      <select id="city">
+        {["Visakhapatnam","New Delhi","Mumbai","Bengaluru","Kolkata","Chennai"].map((c, i) => (
+          <option key={i}>{c}</option>
+        ))}
+      </select>
       <label htmlFor="theatre">Preferred theatre (optional)</label>
       <input id="theatre" placeholder="Search theatre name" />
     </div>
@@ -114,7 +128,6 @@ const App = () => (
   </div>
 );
 
-// Render App
-const container = document.getElementById("root");
-const root = createRoot(container);
+// Render
+const root = createRoot(document.getElementById("root"));
 root.render(<App />);
