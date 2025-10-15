@@ -66,7 +66,7 @@
       requestAnimationFrame(safeLoop);
     });
 
-    // ❌ BLOCKING INFINITE LOOP (will freeze the page)
+    // BLOCKING INFINITE LOOP (will freeze the page)
     document.getElementById("startFreeze").addEventListener("click", () => {
       logDiv.textContent = "Blocking loop started — the page will freeze!";
       while (true) {
