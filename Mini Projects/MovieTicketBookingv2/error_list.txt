@@ -1,0 +1,10 @@
+Errors till now:
+
+1. On book tickets it is not showing the theatres and show list.
+cause: theatre spelling was wrong on the jsp file.
+
+
+2. Logout not working.
+3. Selections of Citites not working.
+4. Update the images for the movies.
+5. In search a search bar is to be added.
