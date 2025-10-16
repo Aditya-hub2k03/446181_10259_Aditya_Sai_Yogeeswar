@@ -9,7 +9,7 @@ const movies = [
     rating: "★ 8.4",
     img: "https://m.media-amazon.com/images/M/MV5BODZhMWJlNjYtNDExNC00MTIzLTllM2ItOGQ2NGVjNDQ3MzkzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
   },
-  {
+  { 
     title: "Fight Club",
     desc: "Action · 2h 19m · English",
     rating: "★ 8.8",
