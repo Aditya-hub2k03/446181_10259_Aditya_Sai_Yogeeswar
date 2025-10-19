@@ -10,7 +10,7 @@ var App = {
 
   show: function (items) {
     var box = document.getElementById("results")
-    box.innerHTML = ""
+    box.innerHTML = "" 
     for (var i = 0; i < items.length; i++) {
       var div = document.createElement("div")
       div.className = "item"
@@ -74,3 +74,4 @@ var App = {
 document.addEventListener("DOMContentLoaded", function () {
   App.start()
 })
+
