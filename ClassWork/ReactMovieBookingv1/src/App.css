@@ -249,4 +249,5 @@
     @media (max-width:520px){
       header{flex-direction:column; align-items:stretch}
       .hero{flex-direction:column; align-items:stretch}
-      .movies-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+      .movies-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
