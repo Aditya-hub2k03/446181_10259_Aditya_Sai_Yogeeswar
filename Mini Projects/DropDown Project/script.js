@@ -8,7 +8,7 @@ var App = {
       .then(function (json) { App.data = json })
   },
 
-  show: function (items) {
+  show: function (items) { 
     var box = document.getElementById("results")
     box.innerHTML = "" 
     for (var i = 0; i < items.length; i++) {
@@ -74,4 +74,5 @@ var App = {
 document.addEventListener("DOMContentLoaded", function () {
   App.start()
 })
+
 
