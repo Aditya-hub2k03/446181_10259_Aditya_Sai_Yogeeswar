@@ -12,7 +12,7 @@ public class Items {
         this.name = name;
         this.brand = brand;
         this.property = property;
-        this.price = price;
+        this.price = price; 
     }
 
     public int getId() { return id; }
