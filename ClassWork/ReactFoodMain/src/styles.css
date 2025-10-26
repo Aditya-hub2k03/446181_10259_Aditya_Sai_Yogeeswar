@@ -1,0 +1,286 @@
+:root {
+    --bg: #ffffff;
+    --text: #222222;
+    --primary: #ff4757;
+    --card: #f5f5f5;
+}
+
+body.dark {
+    --bg: #1b1b1b;
+    --text: #f5f5f5;
+    --card: #2b2b2b;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    font-family: Arial, sans-serif;
+    color: var(--text);
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    background: var(--card);
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 20px;
+    align-items: center;
+    border-bottom: 2px solid var(--primary);
+    z-index: 1000;
+}
+
+.logo-section {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.logo {
+    width: 40px;
+    border-radius: 50%;
+}
+
+.location-select {
+    padding: 6px;
+    border-radius: 6px;
+}
+
+.header-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.header-btn {
+    background: transparent;
+    border: 2px solid var(--primary);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.signup {
+    background: var(--primary);
+    color: white;
+}
+
+/* Dark Mode Switch */
+.theme-switch {
+    position: relative;
+    width: 42px;
+    height: 22px;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #ccc;
+    border-radius: 20px;
+    transition: 0.4s;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    bottom: 2px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background: var(--primary);
+}
+
+input:checked + .slider::before {
+    transform: translateX(20px);
+}
+
+.body-content {
+    padding: 20px;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.search-btn {
+    padding: 10px 16px;
+    background: var(--primary);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Carousel */
+.carousel-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.carousel {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+
+.food-card {
+    min-width: 150px;
+    height: 100px;
+    background: var(--card);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 50px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+/* Restaurant Section */
+.section-title {
+    margin: 20px 0 10px;
+}
+
+.filter-chips {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0 20px;
+}
+
+.chip {
+    background: var(--primary);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.restaurant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.restaurant-card {
+    background: var(--card);
+    padding: 40px 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Footer */
+.footer {
+    background: var(--card);
+    padding: 15px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .carousel-btn {
+        display: none;
+    }
+}
+.restaurant-img {
+  width: 100%;
+  height: 140px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.rating {
+  color: #ff9500;
+  font-weight: bold;
+}
+/* Shimmer Effect */
+.shimmer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
+  gap: 15px;
+  width: 100%;
+}
+
+.shimmer-card {
+  height: 180px;
+  border-radius: 10px;
+  background: linear-gradient(90deg,#e0e0e0 25%,#f5f5f5 50%,#e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.end-msg {
+  text-align: center;
+  padding: 20px;
+  opacity: 0.6;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.food-card:hover {
+  transform: scale(1.05);
+}
+.filter-chips {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 20px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  background: var(--card);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  border: 1px solid var(--primary);
+  transition: 0.3s;
+}
+
+.chip:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.chip.active {
+  background: var(--primary);
+  color: white;
+}
