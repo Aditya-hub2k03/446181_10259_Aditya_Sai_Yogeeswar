@@ -1,10 +1,16 @@
 # 10259 – TMF Java Full Stack  
 *Maintained and operated by Aditya Sai Yogeeswar Pyda (ID: 446181)*
 
-[![JavaScript](https://img.shields.io/badge/Language-JavaScript-yellow)](https://developer.mozilla.org/docs/Web/JavaScript)  
-[![Java](https://img.shields.io/badge/Language-Java-orange)](https://www.oracle.com/java/)  
-[![HTML](https://img.shields.io/badge/Language-HTML5-red)](https://developer.mozilla.org/docs/Web/HTML)<br>
-[![CSS](https://img.shields.io/badge/Language-CSS5-blue)](https://developer.mozilla.org/docs/Web/CSS)
+
+[![Java](https://img.shields.io/badge/Language-Java-orange)](https://www.oracle.com/java/)
+[![SPRING6](https://img.shields.io/badge/Language-SPRING_6-neon)](https://spring.io/)
+[![MAVEN](https://img.shields.io/badge/Language-MAVEN-purple)](https://maven.apache.org/)<br>
+[![HTML](https://img.shields.io/badge/Language-HTML5-red)](https://developer.mozilla.org/docs/Web/HTML)
+[![CSS](https://img.shields.io/badge/Language-CSS5-blue)](https://developer.mozilla.org/docs/Web/CSS)<br>
+[![JavaScript](https://img.shields.io/badge/Language-JavaScript-yellow)](https://developer.mozilla.org/docs/Web/JavaScript)
+[![REACT](https://img.shields.io/badge/Language-REACT_19-green)](https://react.dev/)
+
+
 
 --- 
 
