@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
+import { useNavigate } from "react-router";
 
 const RestaurantGrid = ({ city, lat, lng, searchText, triggerSearch }) => {
   const [restaurants, setRestaurants] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const [activeFilter, setActiveFilter] = useState("All");
+  const navigate = useNavigate();
 
   const FILTERS = [
     { name: "All" },
@@ -16,9 +17,7 @@ const RestaurantGrid = ({ city, lat, lng, searchText, triggerSearch }) => {
   ];
 
   const fetchData = async () => {
-    if (!hasMore || loading) return;
     setLoading(true);
-
     try {
       const API_URL = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${lat}&lng=${lng}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`;
       const res = await fetch(API_URL);
@@ -35,56 +34,27 @@ const RestaurantGrid = ({ city, lat, lng, searchText, triggerSearch }) => {
         });
       }
 
-      if (list.length === 0) {
-        setHasMore(false);
-        setLoading(false);
-        return;
-      }
-
-      // Append new restaurants instead of overwriting
-      setRestaurants((prev) => [...prev, ...list]);
+      setRestaurants(list);
     } catch (err) {
       console.error("Error fetching restaurants:", err);
     }
-
     setLoading(false);
   };
 
-  // Infinite scroll
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop + 200 >=
-      document.documentElement.scrollHeight
-    ) {
-      fetchData();
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Refetch on city change
   useEffect(() => {
     setRestaurants([]);
     setFiltered([]);
-    setHasMore(true);
     fetchData();
   }, [lat, lng]);
 
-  // Apply search + filters whenever restaurants, searchText, or activeFilter change
   useEffect(() => {
     let temp = [...restaurants];
-
-    // Apply search
     if (searchText) {
       temp = temp.filter((r) =>
         r.info.name.toLowerCase().includes(searchText.toLowerCase())
       );
     }
 
-    // Apply filter
     switch (activeFilter) {
       case "Highest Rated":
         temp = temp.filter((r) => r.info.avgRating >= 4.5);
@@ -104,7 +74,7 @@ const RestaurantGrid = ({ city, lat, lng, searchText, triggerSearch }) => {
     setFiltered(temp);
   }, [restaurants, searchText, triggerSearch, activeFilter]);
 
-  // Embedded ResCard
+  
   const ResCard = ({ resObj, index }) => {
     const { info } = resObj;
     const {
@@ -115,15 +85,21 @@ const RestaurantGrid = ({ city, lat, lng, searchText, triggerSearch }) => {
       areaName,
       cuisines,
       avgRating,
+      id,
     } = info;
 
     const costDisplay = costForTwo
       ? `₹${costForTwo / 100} for two`
       : "Cost not available";
-    const ratingDisplay = avgRating ? `★ ${avgRating}` : "Rating N/A";
+    const ratingDisplay = avgRating ? ` ${avgRating}` : "Rating N/A";
 
     return (
-      <div className="restaurant-card" key={`${info.id}-${index}`}>
+      <div
+        className="restaurant-card"
+        key={`${id}-${index}`}
+        onClick={() => navigate(`/resmenu/${id}`)}
+        style={{ cursor: "pointer" }}        
+      >
         <img
           className="restaurant-img"
           src={`https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_300/${cloudinaryImageId}`}
@@ -145,7 +121,6 @@ const RestaurantGrid = ({ city, lat, lng, searchText, triggerSearch }) => {
     <div>
       <h2 className="section-title">Restaurants in {city}</h2>
 
-      {/* Filter Chips */}
       <div className="filter-chips">
         {FILTERS.map((filter) => (
           <div
@@ -158,15 +133,15 @@ const RestaurantGrid = ({ city, lat, lng, searchText, triggerSearch }) => {
         ))}
       </div>
 
-      {/* Restaurant Grid */}
-      <div className="restaurant-grid">
-        {filtered.map((res, index) => (
-          <ResCard key={`${res.info.id}-${index}`} resObj={res} index={index} />
-        ))}
-        {loading && <Shimmer />}
-      </div>
-
-      {!hasMore && <p className="end-msg">You reached the end!</p>}
+      {loading ? (
+        <Shimmer />
+      ) : (
+        <div className="restaurant-grid">
+          {filtered.map((res, index) => (
+            <ResCard key={`${res.info.id}-${index}`} resObj={res} index={index} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
