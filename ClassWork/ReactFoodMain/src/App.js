@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 import Header from "./components/Header/Header";
 import Body from "./components/Body/Body";
 import Footer from "./components/Footer/Footer";
+import ResMenu from "./components/Body/ResMenu"; 
 import "./styles.css";
 
 const App = () => {
@@ -18,7 +20,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <Router>
       <Header
         city={city}
         onCityChange={handleCityChange}
@@ -26,15 +28,29 @@ const App = () => {
         setSearchText={setSearchText}
         setTriggerSearch={setTriggerSearch}
       />
-      <Body
-        city={city}
-        lat={lat}
-        lng={lng}
-        searchText={searchText}
-        triggerSearch={triggerSearch}
-      />
+
+      {/* Define page routes */}
+      <Routes>
+        {/* Home — shows the restaurant grid */}
+        <Route
+          path="/"
+          element={
+            <Body
+              city={city}
+              lat={lat}
+              lng={lng}
+              searchText={searchText}
+              triggerSearch={triggerSearch}
+            />
+          }
+        />
+
+       
+        <Route path="/resmenu/:id" element={<ResMenu />} />
+      </Routes>
+
       <Footer />
-    </>
+    </Router>
   );
 };
 
