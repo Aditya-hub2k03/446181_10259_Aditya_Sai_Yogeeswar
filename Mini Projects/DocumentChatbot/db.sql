@@ -5,7 +5,7 @@ USE chatbot_db;
 CREATE TABLE chat_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     message TEXT,
-    response TEXT,
+    response TEXT, 
     model VARCHAR(50)
 );
 
