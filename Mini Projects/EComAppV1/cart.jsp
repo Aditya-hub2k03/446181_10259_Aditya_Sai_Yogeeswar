@@ -22,6 +22,6 @@
     <%
         }
     %>
-    <br><a href="ItemServlet">Continue Shopping</a>
+    <br><a href="Item Servlet">Continue Shopping</a>
 </body>
 </html>
