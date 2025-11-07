@@ -8,7 +8,7 @@
         .item { border:1px solid #ccc; padding:10px; margin:10px; display:inline-block; }
         .item h3 { margin:0; }
     </style>
-</head>
+</head> 
 <body> 
     <h1>Available Items</h1>
     <%
